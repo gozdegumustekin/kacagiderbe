@@ -1,0 +1,265 @@
+@RELATION emlak_train
+
+@ATTRIBUTE il {Canakkale,bilinmiyor}
+@ATTRIBUTE ilce {Bozcaada,Gelibolu,Gokceada,Merkez,Yenice,bilinmiyor}
+@ATTRIBUTE mahalle {Alaeddin_Mah.,Alaybey_Mh.,Barbaros_Mah.,Camiikebir_Mah.,Cevat_Pasa_Mh.,Cinarli_Mh.,Cumhuriyet_Mah.,Diger_Mahalle,Erenkoy_Koyu,Esenler_Mah.,Eski_Yenice_Mah.,Fatih_Mah.,Ismetpasa_Mh.,Karacaoren_Koyu,Kepez_Bld.,Kislalar_Mh.,Kurtulus_Mh.,Kuzulimani_Mh.,Sirinkoy_Koyu,Tepekoy_Koyu,Ugurlu_Koyu,Yazicizade_Mh.,Yeni_Mh.,Zeytinli_Koyu}
+@ATTRIBUTE emlak_tipi {Satilik,bilinmiyor}
+@ATTRIBUTE bina_yasi_raw {0_Oturuma_Hazir,0_Yapim_Asamasinda,1,11_15_arasi,16_20_arasi,2,21_25_arasi,26_30_arasi,3,31_ve_uzeri,4,5,6_10_arasi,bilinmiyor}
+@ATTRIBUTE bulundugu_kat_raw {1,2,3,4,5,6,7,8,9,Bahce_Kati,Bilinmiyor,Cati_Kati,Giris_Kati,Mustakil,Villa_Tipi,Yuksek_Giris,Zemin_Kat,bilinmiyor}
+@ATTRIBUTE isitma_raw {Dogalgaz_Sobasi,Elektrikli_Radyator,Isi_Pompasi,Kat_Kaloriferi,Klima,Kombi_Dogalgaz,Kombi_Elektrik,Merkezi,Merkezi_Pay_Olcer,Soba,Somine,Yerden_Isitma,Yok,bilinmiyor}
+@ATTRIBUTE isitma_ana_sinif {Dogalgaz_Sobasi,Elektrikli_Radyator,Isi_Pompasi,Kat_Kaloriferi,Klima,Kombi_Dogalgaz,Kombi_Elektrik,Merkezi,Soba,Somine,Yerden_Isitma,Yok,bilinmiyor}
+@ATTRIBUTE mutfak_raw {Acik_Amerikan,Bilinmiyor,Kapali,bilinmiyor}
+@ATTRIBUTE metrekare_brut NUMERIC
+@ATTRIBUTE metrekare_net NUMERIC
+@ATTRIBUTE oda_sayisi NUMERIC
+@ATTRIBUTE bina_yasi_numeric NUMERIC
+@ATTRIBUTE bina_yasi_ordinal NUMERIC
+@ATTRIBUTE bulundugu_kat_no NUMERIC
+@ATTRIBUTE bulundugu_kat_ordinal NUMERIC
+@ATTRIBUTE kat_sayisi NUMERIC
+@ATTRIBUTE isitma_score NUMERIC
+@ATTRIBUTE banyo_sayisi NUMERIC
+@ATTRIBUTE mutfak_acik_mi NUMERIC
+@ATTRIBUTE balkon {yok,var}
+@ATTRIBUTE asansor {yok,var}
+@ATTRIBUTE otopark {yok,var}
+@ATTRIBUTE esyali {yok,var}
+@ATTRIBUTE guvenlik_skoru NUMERIC
+@ATTRIBUTE luks_skoru NUMERIC
+@ATTRIBUTE sosyal_skoru NUMERIC
+@ATTRIBUTE lokasyon_skoru NUMERIC
+@ATTRIBUTE fiyat_kategorisi {100_250_Milyon_TL_Arasi,10_15_Milyon_TL_Arasi,15_25_Milyon_TL_Arasi,1_1_Bucuk_Milyon_TL_Arasi,1_Bucuk_2_Milyon_TL_Arasi,25_50_Milyon_TL_Arasi,2_3_Milyon_TL_Arasi,3_4_Milyon_TL_Arasi,4_5_Milyon_TL_Arasi,50_100_Milyon_TL_Arasi,5_7_Bucuk_Milyon_TL_Arasi,7_Bucuk_10_Milyon_TL_Arasi}
+
+@DATA
+Canakkale,Gokceada,Ugurlu_Koyu,Satilik,0_Oturuma_Hazir,Bahce_Kati,Soba,Soba,Acik_Amerikan,90.0,80.0,3.0,0.0,0.0,0.0,4.0,2.0,1.0,2.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,1,Klima,Klima,Acik_Amerikan,60.0,55.0,2.0,1.0,4.0,1.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,6_10_arasi,1,Merkezi,Merkezi,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,1.0,5.0,2.0,4.0,1.0,1.0,var,yok,var,var,0.0,0.0,1.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,4,Merkezi_Pay_Olcer,Merkezi,Kapali,147.0,127.0,9.0,8.0,3.0,4.0,5.0,5.0,5.0,2.0,0.0,var,var,var,yok,2.0,3.0,4.0,5.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,97.0,85.0,3.0,13.0,2.0,1.0,5.0,4.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,3,Bilinmiyor,Somine,Somine,Acik_Amerikan,210.0,180.0,6.0,3.0,4.0,0.0,0.0,0.0,2.0,4.0,1.0,var,yok,yok,yok,0.0,1.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,Bilinmiyor,Somine,Somine,Kapali,300.0,120.0,4.0,8.0,3.0,0.0,0.0,2.0,2.0,2.0,0.0,yok,yok,yok,yok,0.0,3.0,1.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,4,Merkezi_Pay_Olcer,Merkezi,Kapali,121.0,111.0,4.0,30.0,1.0,4.0,5.0,5.0,5.0,1.0,0.0,var,var,yok,yok,1.0,0.0,4.0,3.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,5,3,Merkezi_Pay_Olcer,Merkezi,Acik_Amerikan,60.0,45.0,2.0,5.0,4.0,3.0,5.0,7.0,5.0,1.0,1.0,var,var,var,yok,1.0,0.0,1.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Somine,Somine,Acik_Amerikan,130.0,110.0,4.0,21.0,2.0,0.0,0.0,0.0,2.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,5.0,2.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,150.0,140.0,4.0,30.0,1.0,4.0,5.0,5.0,5.0,2.0,0.0,var,yok,var,yok,0.0,0.0,0.0,2.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,6_10_arasi,7,Merkezi_Pay_Olcer,Merkezi,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,7.0,4.0,7.0,5.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,Yuksek_Giris,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,0.0,4.0,7.0,5.0,1.0,1.0,var,var,var,var,1.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,0_Yapim_Asamasinda,Giris_Kati,Yerden_Isitma,Yerden_Isitma,Kapali,145.0,125.0,4.0,0.0,0.0,0.0,3.0,7.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,Bahce_Kati,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,110.0,85.0,3.0,8.0,3.0,0.0,4.0,2.0,5.0,1.0,1.0,var,yok,var,yok,6.0,6.0,8.0,7.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,Giris_Kati,Merkezi,Merkezi,Acik_Amerikan,55.0,50.0,2.0,8.0,3.0,0.0,3.0,2.0,4.0,1.0,1.0,var,yok,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,Zemin_Kat,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,60.0,55.0,2.0,30.0,1.0,0.0,3.0,3.0,5.0,1.0,0.0,var,yok,yok,var,0.0,0.0,2.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,65.0,49.0,2.0,8.0,3.0,2.0,5.0,3.0,5.0,1.0,1.0,yok,var,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gelibolu,Camiikebir_Mah.,Satilik,4,Yuksek_Giris,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,70.0,65.0,2.0,4.0,4.0,0.0,4.0,4.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Klima,Klima,Kapali,60.0,50.0,4.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,0.0,yok,yok,yok,var,0.0,0.0,1.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Oturuma_Hazir,5,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,130.0,110.0,4.0,0.0,0.0,5.0,5.0,5.0,5.0,2.0,1.0,var,var,var,yok,0.0,1.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,260.0,223.0,6.0,8.0,3.0,3.0,5.0,3.0,5.0,2.0,0.0,var,var,yok,yok,0.0,1.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,0_Oturuma_Hazir,Zemin_Kat,Soba,Soba,Acik_Amerikan,52.0,40.0,2.0,0.0,0.0,0.0,3.0,3.0,1.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,1.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,16_20_arasi,Bilinmiyor,Soba,Soba,Acik_Amerikan,100.0,90.0,3.0,16.0,2.0,0.0,0.0,0.0,1.0,1.0,1.0,var,yok,yok,var,0.0,1.0,0.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Isi_Pompasi,Isi_Pompasi,Kapali,160.0,135.0,9.0,30.0,1.0,0.0,0.0,2.0,0.0,2.0,0.0,yok,yok,yok,var,0.0,0.0,3.0,6.0,25_50_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,11_15_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,110.0,83.0,4.0,13.0,2.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,1.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Isi_Pompasi,Isi_Pompasi,Acik_Amerikan,150.0,130.0,4.0,8.0,3.0,2.0,5.0,2.0,0.0,2.0,1.0,var,yok,var,yok,0.0,0.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,4,Bahce_Kati,Klima,Klima,Acik_Amerikan,110.0,100.0,3.0,4.0,4.0,0.0,4.0,3.0,3.0,1.0,1.0,var,yok,var,var,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Erenkoy_Koyu,Satilik,16_20_arasi,Yuksek_Giris,Kat_Kaloriferi,Kat_Kaloriferi,Kapali,140.0,120.0,4.0,16.0,2.0,0.0,4.0,7.0,4.0,1.0,0.0,var,var,var,yok,2.0,0.0,3.0,4.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Eski_Yenice_Mah.,Satilik,0_Oturuma_Hazir,Zemin_Kat,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,64.0,50.0,2.0,0.0,0.0,0.0,3.0,3.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,0_Oturuma_Hazir,2,Merkezi_Pay_Olcer,Merkezi,Kapali,119.0,92.0,4.0,0.0,0.0,2.0,5.0,7.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,1,1,Merkezi,Merkezi,Acik_Amerikan,100.0,85.0,3.0,1.0,4.0,1.0,5.0,3.0,4.0,2.0,1.0,var,yok,var,yok,6.0,6.0,7.0,17.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,0_Oturuma_Hazir,1,Yerden_Isitma,Yerden_Isitma,Kapali,125.0,110.0,4.0,0.0,0.0,1.0,5.0,8.0,5.0,2.0,0.0,var,var,var,yok,4.0,3.0,6.0,2.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Klima,Klima,Acik_Amerikan,55.0,50.0,3.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,1.0,yok,yok,yok,var,0.0,0.0,2.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,6_10_arasi,Bilinmiyor,Klima,Klima,Kapali,200.0,190.0,10.0,8.0,3.0,0.0,0.0,0.0,3.0,6.0,0.0,yok,yok,yok,var,0.0,0.0,1.0,1.0,50_100_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,6_10_arasi,1,Klima,Klima,Acik_Amerikan,105.0,100.0,4.0,8.0,3.0,1.0,5.0,3.0,3.0,2.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,5,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,230.0,185.0,6.0,8.0,3.0,5.0,5.0,5.0,5.0,3.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Tepekoy_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Yok,Yok,Kapali,7.0,54.0,3.0,30.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,var,yok,yok,yok,0.0,1.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,5,Bahce_Kati,Kat_Kaloriferi,Kat_Kaloriferi,Acik_Amerikan,90.0,80.0,3.0,5.0,4.0,0.0,4.0,2.0,4.0,2.0,1.0,var,yok,var,var,0.0,1.0,2.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,11_15_arasi,Bahce_Kati,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,105.0,90.0,3.0,13.0,2.0,0.0,4.0,4.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,21_25_arasi,Mustakil,Isi_Pompasi,Isi_Pompasi,Kapali,130.0,120.0,4.0,21.0,2.0,1.0,5.0,2.0,0.0,2.0,0.0,var,yok,var,yok,0.0,1.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Ugurlu_Koyu,Satilik,0_Oturuma_Hazir,2,Soba,Soba,Acik_Amerikan,185.0,170.0,7.0,0.0,0.0,2.0,5.0,3.0,1.0,3.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,135.0,125.0,4.0,8.0,3.0,3.0,5.0,5.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Somine,Somine,Acik_Amerikan,300.0,290.0,4.0,0.0,0.0,0.0,0.0,0.0,2.0,2.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Gokceada,Zeytinli_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Soba,Soba,Kapali,95.0,90.0,5.0,30.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,var,yok,yok,var,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,116.0,92.0,4.0,0.0,0.0,0.0,0.0,3.0,5.0,2.0,1.0,yok,yok,var,yok,0.0,0.0,1.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,1,Kat_Kaloriferi,Kat_Kaloriferi,Acik_Amerikan,120.0,100.0,4.0,8.0,3.0,1.0,5.0,2.0,4.0,2.0,1.0,var,yok,var,yok,0.0,2.0,0.0,1.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Yok,Yok,Acik_Amerikan,50.0,40.0,2.0,8.0,3.0,2.0,5.0,2.0,1.0,1.0,1.0,var,yok,var,var,0.0,0.0,0.0,1.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Diger_Mahalle,Satilik,31_ve_uzeri,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,55.0,50.0,2.0,30.0,1.0,1.0,5.0,3.0,5.0,1.0,0.0,yok,yok,yok,var,0.0,0.0,1.0,1.0,2_3_Milyon_TL_Arasi
+Canakkale,Gelibolu,Yazicizade_Mh.,Satilik,26_30_arasi,3,Soba,Soba,Acik_Amerikan,90.0,85.0,3.0,30.0,1.0,3.0,5.0,3.0,1.0,1.0,1.0,var,yok,var,yok,0.0,0.0,2.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,150.0,140.0,6.0,8.0,3.0,3.0,5.0,3.0,5.0,2.0,1.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,Bahce_Kati,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,110.0,100.0,4.0,1.0,4.0,0.0,4.0,3.0,5.0,2.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Sirinkoy_Koyu,Satilik,21_25_arasi,Bilinmiyor,Soba,Soba,Kapali,125.0,120.0,4.0,21.0,2.0,0.0,0.0,0.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Fatih_Mah.,Satilik,4,3,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,103.0,78.0,3.0,4.0,4.0,3.0,5.0,3.0,5.0,2.0,1.0,var,var,var,yok,0.0,1.0,3.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,135.0,125.0,4.0,8.0,3.0,3.0,5.0,3.0,5.0,2.0,1.0,var,yok,var,yok,0.0,2.0,2.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,6_10_arasi,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,250.0,200.0,4.0,8.0,3.0,0.0,0.0,1.0,5.0,2.0,1.0,yok,yok,var,var,1.0,2.0,1.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Gokceada,Tepekoy_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Soba,Soba,Acik_Amerikan,133.0,110.0,3.0,30.0,1.0,0.0,0.0,0.0,1.0,2.0,1.0,var,yok,yok,var,0.0,0.0,1.0,1.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,26_30_arasi,Bilinmiyor,Somine,Somine,Acik_Amerikan,110.0,100.0,4.0,30.0,1.0,0.0,0.0,0.0,2.0,2.0,1.0,var,yok,yok,yok,0.0,2.0,0.0,1.0,50_100_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,5,2,Klima,Klima,Acik_Amerikan,60.0,50.0,2.0,5.0,4.0,2.0,5.0,2.0,3.0,1.0,1.0,var,yok,var,var,0.0,0.0,1.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Zeytinli_Koyu,Satilik,2,Bilinmiyor,Klima,Klima,Acik_Amerikan,202.0,60.0,7.0,2.0,4.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,var,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Fatih_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Soba,Soba,Kapali,216.0,150.0,3.0,30.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,5,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,146.0,128.0,4.0,5.0,4.0,1.0,5.0,5.0,5.0,2.0,0.0,var,var,var,yok,1.0,2.0,1.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,1,Bahce_Kati,Klima,Klima,Acik_Amerikan,68.0,60.0,3.0,1.0,4.0,0.0,4.0,2.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,21_25_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,105.0,75.0,3.0,21.0,2.0,3.0,5.0,3.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,4.0,2.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,11_15_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,130.0,125.0,4.0,13.0,2.0,0.0,0.0,0.0,3.0,2.0,1.0,var,yok,yok,yok,1.0,0.0,0.0,1.0,50_100_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,6_10_arasi,6,Merkezi_Pay_Olcer,Merkezi,Kapali,168.0,155.0,4.0,8.0,3.0,6.0,4.0,7.0,5.0,2.0,0.0,var,var,var,yok,2.0,2.0,2.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Elektrikli_Radyator,Elektrikli_Radyator,Acik_Amerikan,110.0,100.0,8.0,21.0,2.0,0.0,0.0,0.0,2.0,2.0,1.0,var,yok,yok,var,0.0,2.0,2.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Oturuma_Hazir,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,89.0,79.0,3.0,0.0,0.0,2.0,5.0,3.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Fatih_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Yok,Yok,Acik_Amerikan,120.0,95.0,4.0,30.0,1.0,0.0,0.0,0.0,1.0,2.0,1.0,var,yok,yok,yok,0.0,0.0,2.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Merkezi,Merkezi,Kapali,98.0,85.0,3.0,8.0,3.0,2.0,5.0,2.0,4.0,2.0,0.0,var,yok,var,var,0.0,0.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Elektrikli_Radyator,Elektrikli_Radyator,Acik_Amerikan,96.0,88.0,2.0,21.0,2.0,0.0,0.0,0.0,2.0,2.0,1.0,yok,yok,yok,var,0.0,0.0,0.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,2,2,Klima,Klima,Acik_Amerikan,60.0,55.0,2.0,2.0,4.0,2.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,4,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,90.0,80.0,3.0,4.0,4.0,2.0,5.0,4.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,0_Oturuma_Hazir,1,Yok,Yok,Acik_Amerikan,112.0,105.0,4.0,0.0,0.0,1.0,5.0,1.0,1.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,Cati_Kati,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,160.0,140.0,5.0,13.0,2.0,99.0,2.0,2.0,5.0,2.0,0.0,var,yok,yok,yok,0.0,3.0,1.0,2.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,0_Yapim_Asamasinda,8,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,55.0,45.0,2.0,0.0,0.0,8.0,4.0,8.0,5.0,1.0,1.0,var,var,var,yok,3.0,1.0,5.0,1.0,2_3_Milyon_TL_Arasi
+Canakkale,Yenice,Diger_Mahalle,Satilik,5,2,Kat_Kaloriferi,Kat_Kaloriferi,Kapali,120.0,110.0,3.0,5.0,4.0,2.0,5.0,5.0,4.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Merkezi,Merkezi,Acik_Amerikan,50.0,40.0,2.0,8.0,3.0,2.0,5.0,2.0,4.0,1.0,1.0,var,yok,var,yok,0.0,0.0,5.0,1.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,6_10_arasi,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Kapali,250.0,200.0,6.0,8.0,3.0,0.0,0.0,0.0,5.0,5.0,0.0,var,yok,yok,var,0.0,3.0,2.0,5.0,25_50_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,21_25_arasi,Bilinmiyor,Kat_Kaloriferi,Kat_Kaloriferi,Acik_Amerikan,320.0,250.0,4.0,21.0,2.0,0.0,0.0,0.0,4.0,2.0,1.0,var,yok,yok,yok,0.0,3.0,0.0,3.0,25_50_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,26_30_arasi,Villa_Tipi,Klima,Klima,Acik_Amerikan,190.0,180.0,7.0,30.0,1.0,1.0,5.0,2.0,3.0,2.0,1.0,var,yok,var,var,1.0,0.0,4.0,1.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,2,Klima,Klima,Acik_Amerikan,60.0,55.0,2.0,1.0,4.0,2.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,6_10_arasi,1,Merkezi,Merkezi,Acik_Amerikan,90.0,77.0,3.0,8.0,3.0,1.0,5.0,2.0,4.0,1.0,1.0,var,yok,var,var,0.0,0.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Fatih_Mah.,Satilik,6_10_arasi,3,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,85.0,80.0,3.0,8.0,3.0,3.0,5.0,3.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,3.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,3,7,Merkezi_Pay_Olcer,Merkezi,Kapali,160.0,135.0,4.0,3.0,4.0,7.0,4.0,8.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,26_30_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,170.0,140.0,6.0,30.0,1.0,0.0,0.0,2.0,3.0,3.0,1.0,yok,yok,var,var,0.0,1.0,1.0,6.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,26_30_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,150.0,135.0,4.0,30.0,1.0,1.0,5.0,4.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,2.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Ugurlu_Koyu,Satilik,4,2,Soba,Soba,Acik_Amerikan,85.0,75.0,3.0,4.0,4.0,2.0,5.0,2.0,1.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,5,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,60.0,50.0,2.0,5.0,4.0,1.0,5.0,6.0,5.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Erenkoy_Koyu,Satilik,16_20_arasi,3,Merkezi,Merkezi,Acik_Amerikan,114.0,98.0,3.0,16.0,2.0,3.0,5.0,3.0,4.0,1.0,1.0,var,yok,var,yok,0.0,0.0,4.0,2.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,110.0,100.0,3.0,30.0,1.0,1.0,5.0,3.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,4,Bilinmiyor,Klima,Klima,Acik_Amerikan,105.0,90.0,4.0,4.0,4.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Tepekoy_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Somine,Somine,Kapali,140.0,125.0,4.0,30.0,1.0,0.0,0.0,0.0,2.0,2.0,0.0,yok,yok,yok,yok,0.0,1.0,4.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Gelibolu,Yazicizade_Mh.,Satilik,21_25_arasi,4,Klima,Klima,Kapali,90.0,85.0,3.0,21.0,2.0,4.0,5.0,5.0,3.0,1.0,0.0,var,yok,var,var,0.0,0.0,1.0,1.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,21_25_arasi,2,Klima,Klima,Kapali,102.0,90.0,5.0,21.0,2.0,2.0,5.0,2.0,3.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,11_15_arasi,2,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,90.0,75.0,3.0,13.0,2.0,2.0,5.0,5.0,5.0,1.0,1.0,yok,var,var,yok,0.0,0.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,6_10_arasi,Bilinmiyor,Somine,Somine,Acik_Amerikan,130.0,120.0,4.0,8.0,3.0,0.0,0.0,0.0,2.0,3.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,Bahce_Kati,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,165.0,150.0,6.0,8.0,3.0,0.0,4.0,2.0,5.0,2.0,1.0,var,yok,var,var,0.0,1.0,2.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,53.0,45.0,2.0,8.0,3.0,2.0,5.0,2.0,3.0,1.0,1.0,var,yok,var,var,0.0,0.0,4.0,2.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,Yuksek_Giris,Merkezi,Merkezi,Acik_Amerikan,45.0,35.0,1.0,8.0,3.0,0.0,4.0,4.0,4.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Gelibolu,Yazicizade_Mh.,Satilik,26_30_arasi,5,Klima,Klima,Kapali,80.0,70.0,3.0,30.0,1.0,5.0,5.0,5.0,3.0,1.0,0.0,var,yok,var,var,0.0,0.0,0.0,0.0,1_1_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,3,2,Merkezi,Merkezi,Acik_Amerikan,80.0,70.0,3.0,3.0,4.0,2.0,5.0,2.0,4.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,16_20_arasi,Mustakil,Soba,Soba,Acik_Amerikan,90.0,80.0,4.0,16.0,2.0,1.0,5.0,2.0,1.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,2.0,3.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,4,4,Merkezi_Pay_Olcer,Merkezi,Acik_Amerikan,85.0,76.0,3.0,4.0,4.0,4.0,5.0,7.0,5.0,1.0,1.0,var,var,var,yok,4.0,0.0,2.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gelibolu,Alaeddin_Mah.,Satilik,26_30_arasi,3,Soba,Soba,Kapali,140.0,114.0,4.0,30.0,1.0,3.0,5.0,4.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,3.0,2.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,16_20_arasi,Bilinmiyor,Somine,Somine,Kapali,145.0,82.0,4.0,16.0,2.0,0.0,0.0,0.0,2.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Sirinkoy_Koyu,Satilik,21_25_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,500.0,250.0,9.0,21.0,2.0,0.0,0.0,0.0,3.0,5.0,1.0,var,yok,yok,yok,1.0,1.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,16_20_arasi,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,100.0,85.0,3.0,16.0,2.0,4.0,5.0,4.0,5.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Diger_Mahalle,Satilik,6_10_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,190.0,135.0,4.0,8.0,3.0,1.0,5.0,4.0,5.0,2.0,0.0,var,var,yok,yok,0.0,3.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Klima,Klima,Acik_Amerikan,300.0,220.0,10.0,0.0,0.0,0.0,0.0,2.0,3.0,6.0,1.0,yok,yok,var,yok,0.0,0.0,1.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Oturuma_Hazir,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,84.0,74.0,3.0,0.0,0.0,1.0,5.0,3.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,0_Oturuma_Hazir,2,Klima,Klima,Acik_Amerikan,80.0,65.0,3.0,0.0,0.0,2.0,5.0,2.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,2.0,1.0,4_5_Milyon_TL_Arasi
+Canakkale,Yenice,Kislalar_Mh.,Satilik,16_20_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,145.0,130.0,4.0,16.0,2.0,3.0,5.0,4.0,5.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,6_10_arasi,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,250.0,200.0,4.0,8.0,3.0,0.0,0.0,1.0,5.0,2.0,1.0,yok,yok,var,yok,0.0,2.0,1.0,1.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Erenkoy_Koyu,Satilik,3,2,Kat_Kaloriferi,Kat_Kaloriferi,Kapali,92.0,72.0,3.0,3.0,4.0,2.0,5.0,4.0,4.0,1.0,0.0,var,var,var,yok,1.0,0.0,1.0,2.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,4,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,130.0,124.0,4.0,4.0,4.0,1.0,5.0,5.0,5.0,2.0,0.0,var,var,var,yok,5.0,4.0,6.0,5.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Kapali,197.0,183.0,5.0,0.0,0.0,0.0,0.0,3.0,5.0,3.0,0.0,yok,yok,var,yok,0.0,2.0,2.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,3,2,Klima,Klima,Acik_Amerikan,55.0,45.0,2.0,3.0,4.0,2.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,2.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,150.0,85.0,3.0,0.0,0.0,0.0,0.0,2.0,5.0,2.0,1.0,yok,yok,var,var,0.0,1.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Fatih_Mah.,Satilik,4,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,103.0,78.0,3.0,4.0,4.0,3.0,5.0,3.0,5.0,2.0,1.0,var,var,yok,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,0_Yapim_Asamasinda,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,50.0,40.0,2.0,0.0,0.0,3.0,5.0,3.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,3.0,1.0,3_4_Milyon_TL_Arasi
+Canakkale,Gelibolu,Diger_Mahalle,Satilik,21_25_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,100.0,95.0,3.0,21.0,2.0,1.0,5.0,3.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,3.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Yenice,Kislalar_Mh.,Satilik,0_Yapim_Asamasinda,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,100.0,90.0,3.0,0.0,0.0,1.0,5.0,3.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,6_10_arasi,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,80.0,75.0,3.0,8.0,3.0,4.0,5.0,4.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,45.0,40.0,2.0,8.0,3.0,2.0,5.0,2.0,3.0,1.0,1.0,var,yok,yok,var,0.0,0.0,1.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,Yuksek_Giris,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,0.0,4.0,4.0,5.0,1.0,1.0,yok,yok,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,26_30_arasi,Mustakil,Kombi_Elektrik,Kombi_Elektrik,Kapali,215.0,192.0,8.0,30.0,1.0,1.0,5.0,3.0,3.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,70.0,56.0,2.0,13.0,2.0,2.0,5.0,4.0,5.0,1.0,1.0,var,var,var,yok,2.0,0.0,4.0,3.0,4_5_Milyon_TL_Arasi
+Canakkale,Gelibolu,Alaeddin_Mah.,Satilik,26_30_arasi,1,Soba,Soba,Kapali,105.0,90.0,3.0,30.0,1.0,1.0,5.0,3.0,1.0,1.0,0.0,var,yok,var,yok,0.0,0.0,4.0,3.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,31_ve_uzeri,Bilinmiyor,Somine,Somine,Acik_Amerikan,85.0,70.0,4.0,30.0,1.0,0.0,0.0,0.0,2.0,2.0,1.0,var,yok,yok,yok,0.0,0.0,1.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Zeytinli_Koyu,Satilik,26_30_arasi,Bilinmiyor,Soba,Soba,Kapali,70.0,69.0,4.0,30.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,yok,yok,yok,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,3,Klima,Klima,Acik_Amerikan,45.0,40.0,2.0,1.0,4.0,3.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,6_10_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,120.0,80.0,4.0,8.0,3.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,var,0.0,0.0,0.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,4,3,Merkezi_Pay_Olcer,Merkezi,Kapali,155.0,120.0,4.0,4.0,4.0,3.0,5.0,5.0,5.0,2.0,0.0,var,var,var,yok,2.0,1.0,3.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Elektrikli_Radyator,Elektrikli_Radyator,Acik_Amerikan,80.0,72.0,3.0,21.0,2.0,0.0,0.0,0.0,2.0,1.0,1.0,yok,yok,yok,var,0.0,0.0,3.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,16_20_arasi,Bilinmiyor,Kat_Kaloriferi,Kat_Kaloriferi,Kapali,130.0,125.0,3.0,16.0,2.0,0.0,0.0,0.0,4.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gelibolu,Alaeddin_Mah.,Satilik,26_30_arasi,5,Soba,Soba,Kapali,100.0,90.0,3.0,30.0,1.0,5.0,5.0,5.0,1.0,1.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Yenice,Diger_Mahalle,Satilik,1,Mustakil,Kat_Kaloriferi,Kat_Kaloriferi,Kapali,160.0,140.0,4.0,1.0,4.0,1.0,5.0,2.0,4.0,2.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,Mustakil,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,280.0,250.0,6.0,13.0,2.0,1.0,5.0,3.0,5.0,4.0,0.0,var,yok,var,var,0.0,2.0,0.0,2.0,15_25_Milyon_TL_Arasi
+Canakkale,Gelibolu,Yazicizade_Mh.,Satilik,21_25_arasi,5,Soba,Soba,Kapali,130.0,120.0,4.0,21.0,2.0,5.0,5.0,5.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,1_1_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,250.0,170.0,5.0,13.0,2.0,3.0,5.0,3.0,5.0,2.0,0.0,var,var,var,var,2.0,2.0,4.0,3.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,Yuksek_Giris,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,176.0,160.0,5.0,13.0,2.0,0.0,4.0,4.0,5.0,2.0,0.0,var,var,yok,yok,0.0,0.0,3.0,1.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,100.0,90.0,4.0,8.0,3.0,2.0,5.0,2.0,3.0,2.0,1.0,var,yok,var,yok,0.0,1.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,31_ve_uzeri,Bilinmiyor,Somine,Somine,Kapali,145.0,130.0,6.0,30.0,1.0,0.0,0.0,0.0,2.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,5,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,70.0,60.0,3.0,5.0,4.0,2.0,5.0,4.0,5.0,1.0,1.0,var,var,yok,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Mustakil,Klima,Klima,Kapali,150.0,140.0,6.0,21.0,2.0,1.0,5.0,1.0,3.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,1.0,15_25_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,210.0,175.0,6.0,8.0,3.0,3.0,5.0,3.0,5.0,3.0,0.0,var,var,var,yok,1.0,1.0,5.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,16_20_arasi,Bilinmiyor,Soba,Soba,Acik_Amerikan,9.0,100.0,4.0,16.0,2.0,0.0,0.0,0.0,1.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,75.0,60.0,2.0,13.0,2.0,2.0,5.0,3.0,5.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,4.0,3.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Yapim_Asamasinda,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,110.0,100.0,4.0,0.0,0.0,2.0,5.0,3.0,5.0,2.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Yenice,Eski_Yenice_Mah.,Satilik,0_Oturuma_Hazir,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,45.0,36.0,2.0,0.0,0.0,3.0,5.0,4.0,5.0,1.0,1.0,var,yok,yok,yok,0.0,0.0,2.0,0.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,11_15_arasi,3,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,85.0,75.0,3.0,13.0,2.0,3.0,5.0,5.0,5.0,1.0,1.0,var,var,var,yok,3.0,4.0,3.0,1.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,Yuksek_Giris,Dogalgaz_Sobasi,Dogalgaz_Sobasi,Acik_Amerikan,65.0,55.0,2.0,1.0,4.0,0.0,4.0,2.0,2.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,Giris_Kati,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,55.0,47.0,2.0,8.0,3.0,0.0,3.0,6.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,0_Yapim_Asamasinda,Bahce_Kati,Merkezi,Merkezi,Acik_Amerikan,60.0,55.0,3.0,0.0,0.0,0.0,4.0,2.0,4.0,1.0,1.0,var,yok,var,yok,0.0,0.0,4.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gelibolu,Yazicizade_Mh.,Satilik,21_25_arasi,5,Klima,Klima,Kapali,110.0,100.0,3.0,21.0,2.0,5.0,5.0,5.0,3.0,1.0,0.0,var,yok,yok,var,0.0,0.0,5.0,2.0,2_3_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,11_15_arasi,Bahce_Kati,Klima,Klima,Acik_Amerikan,70.0,55.0,3.0,13.0,2.0,0.0,4.0,2.0,3.0,1.0,1.0,var,yok,var,var,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,3,3,Klima,Klima,Acik_Amerikan,55.0,48.0,2.0,3.0,4.0,3.0,5.0,3.0,3.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,11_15_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,85.0,74.0,3.0,13.0,2.0,3.0,5.0,5.0,5.0,1.0,0.0,var,var,yok,yok,0.0,0.0,3.0,3.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,11_15_arasi,Yuksek_Giris,Merkezi_Pay_Olcer,Merkezi,Kapali,125.0,115.0,4.0,13.0,2.0,0.0,4.0,4.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,6.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,26_30_arasi,3,Merkezi,Merkezi,Kapali,120.0,100.0,4.0,30.0,1.0,3.0,5.0,5.0,4.0,2.0,0.0,var,var,var,yok,2.0,0.0,3.0,3.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Yenice,Diger_Mahalle,Satilik,16_20_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,145.0,135.0,4.0,16.0,2.0,3.0,5.0,3.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Oturuma_Hazir,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,50.0,40.0,2.0,0.0,0.0,2.0,5.0,3.0,5.0,1.0,1.0,yok,var,var,yok,1.0,1.0,2.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,11_15_arasi,2,Merkezi,Merkezi,Acik_Amerikan,52.0,50.0,2.0,13.0,2.0,2.0,5.0,2.0,4.0,1.0,1.0,var,yok,yok,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,31_ve_uzeri,Bilinmiyor,Kat_Kaloriferi,Kat_Kaloriferi,Acik_Amerikan,204.0,195.0,5.0,30.0,1.0,0.0,0.0,2.0,4.0,4.0,1.0,yok,yok,yok,var,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,5,5,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,55.0,50.0,2.0,5.0,4.0,5.0,5.0,6.0,5.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,0_Oturuma_Hazir,2,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,76.0,52.0,3.0,0.0,0.0,2.0,5.0,3.0,5.0,1.0,1.0,var,yok,var,yok,0.0,1.0,1.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,31_ve_uzeri,Bahce_Kati,Yok,Yok,Kapali,140.0,130.0,4.0,30.0,1.0,0.0,4.0,2.0,1.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,1.0,2.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Sirinkoy_Koyu,Satilik,16_20_arasi,Bilinmiyor,Klima,Klima,Kapali,500.0,160.0,6.0,16.0,2.0,0.0,0.0,0.0,3.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,2.0,3.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,75.0,65.0,3.0,8.0,3.0,2.0,5.0,2.0,3.0,1.0,1.0,var,yok,var,yok,0.0,1.0,1.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Ugurlu_Koyu,Satilik,0_Oturuma_Hazir,Bahce_Kati,Soba,Soba,bilinmiyor,90.0,80.0,3.0,0.0,0.0,0.0,4.0,2.0,1.0,2.0,1.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,0_Yapim_Asamasinda,9,Merkezi_Pay_Olcer,Merkezi,Acik_Amerikan,50.0,45.0,2.0,0.0,0.0,9.0,4.0,9.0,5.0,1.0,1.0,var,var,var,yok,0.0,0.0,0.0,1.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,6_10_arasi,Bilinmiyor,Soba,Soba,Acik_Amerikan,160.0,114.0,5.0,8.0,3.0,0.0,0.0,0.0,1.0,2.0,1.0,var,yok,yok,yok,0.0,1.0,0.0,2.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,180.0,160.0,4.0,8.0,3.0,3.0,5.0,3.0,5.0,3.0,0.0,var,var,yok,yok,0.0,0.0,1.0,1.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,31_ve_uzeri,Bilinmiyor,Yok,Yok,Kapali,130.0,114.0,6.0,30.0,1.0,0.0,0.0,0.0,1.0,2.0,0.0,var,yok,yok,yok,0.0,0.0,1.0,1.0,50_100_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,16_20_arasi,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,95.0,85.0,3.0,16.0,2.0,4.0,5.0,4.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,26_30_arasi,Bilinmiyor,Yok,Yok,Kapali,51.0,50.0,4.0,30.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,var,yok,yok,var,0.0,0.0,4.0,2.0,15_25_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,6_10_arasi,Bilinmiyor,Soba,Soba,Acik_Amerikan,160.0,114.0,5.0,8.0,3.0,0.0,0.0,0.0,1.0,2.0,1.0,var,yok,yok,yok,0.0,1.0,1.0,2.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,135.0,125.0,3.0,8.0,3.0,3.0,5.0,3.0,5.0,3.0,1.0,var,var,var,var,1.0,2.0,0.0,2.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,31_ve_uzeri,Bilinmiyor,Soba,Soba,Kapali,152.0,132.0,5.0,30.0,1.0,0.0,0.0,0.0,1.0,2.0,0.0,var,yok,yok,yok,0.0,1.0,4.0,4.0,10_15_Milyon_TL_Arasi
+Canakkale,Merkez,Karacaoren_Koyu,Satilik,3,7,Merkezi_Pay_Olcer,Merkezi,Kapali,160.0,135.0,4.0,3.0,4.0,7.0,4.0,7.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Kuzulimani_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,2.0,5.0,2.0,3.0,1.0,1.0,yok,yok,var,var,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,31_ve_uzeri,5,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,125.0,115.0,4.0,30.0,1.0,5.0,5.0,5.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Yapim_Asamasinda,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,92.0,82.0,3.0,0.0,0.0,2.0,5.0,4.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,Yuksek_Giris,Merkezi,Merkezi,Acik_Amerikan,50.0,45.0,2.0,8.0,3.0,0.0,4.0,4.0,4.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,0_Oturuma_Hazir,Mustakil,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,125.0,85.0,4.0,0.0,0.0,1.0,5.0,3.0,5.0,2.0,1.0,var,yok,var,yok,0.0,0.0,1.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,6_10_arasi,2,Merkezi,Merkezi,Acik_Amerikan,75.0,65.0,3.0,8.0,3.0,2.0,5.0,2.0,4.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gelibolu,Diger_Mahalle,Satilik,26_30_arasi,3,Yok,Yok,Kapali,100.0,94.0,3.0,30.0,1.0,3.0,5.0,4.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,2.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,26_30_arasi,Bilinmiyor,Isi_Pompasi,Isi_Pompasi,Acik_Amerikan,187.0,180.0,3.0,30.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,yok,yok,yok,yok,0.0,0.0,0.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,197.0,181.0,7.0,13.0,2.0,2.0,5.0,2.0,5.0,2.0,0.0,var,yok,var,yok,0.0,1.0,3.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,16_20_arasi,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,173.0,147.0,10.0,16.0,2.0,4.0,5.0,4.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,3.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,26_30_arasi,Bilinmiyor,Soba,Soba,Kapali,130.0,100.0,4.0,30.0,1.0,0.0,0.0,0.0,1.0,2.0,0.0,yok,yok,yok,var,0.0,1.0,3.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,290.0,220.0,5.0,8.0,3.0,3.0,5.0,3.0,5.0,2.0,0.0,var,var,var,yok,0.0,0.0,0.0,1.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,5,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,205.0,180.0,5.0,5.0,4.0,4.0,5.0,4.0,5.0,2.0,1.0,var,var,yok,yok,0.0,1.0,3.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,6_10_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,89.0,80.0,3.0,8.0,3.0,1.0,5.0,3.0,5.0,1.0,0.0,var,var,yok,yok,1.0,0.0,2.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Yenice,Eski_Yenice_Mah.,Satilik,0_Oturuma_Hazir,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,90.0,83.0,3.0,0.0,0.0,1.0,5.0,3.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,6_10_arasi,2,Klima,Klima,Acik_Amerikan,55.0,45.0,2.0,8.0,3.0,2.0,5.0,4.0,3.0,1.0,1.0,var,var,yok,var,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,100.0,80.0,3.0,30.0,1.0,4.0,5.0,4.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,2.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,11_15_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,130.0,120.0,4.0,13.0,2.0,1.0,5.0,4.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,5.0,1.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,0_Oturuma_Hazir,Bilinmiyor,Yerden_Isitma,Yerden_Isitma,Kapali,197.0,183.0,5.0,0.0,0.0,0.0,0.0,3.0,5.0,3.0,0.0,yok,yok,var,yok,0.0,2.0,2.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gelibolu,Alaeddin_Mah.,Satilik,21_25_arasi,1,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,90.0,80.0,3.0,21.0,2.0,1.0,5.0,5.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,3.0,1.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,26_30_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,95.0,80.0,3.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,1.0,yok,yok,yok,var,0.0,0.0,1.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Gelibolu,Camiikebir_Mah.,Satilik,26_30_arasi,3,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,90.0,85.0,3.0,30.0,1.0,3.0,5.0,4.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,1.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,0_Oturuma_Hazir,Bahce_Kati,Klima,Klima,Acik_Amerikan,75.0,65.0,3.0,0.0,0.0,0.0,4.0,2.0,3.0,2.0,1.0,yok,yok,var,yok,0.0,1.0,1.0,1.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Ismetpasa_Mh.,Satilik,6_10_arasi,2,Merkezi_Pay_Olcer,Merkezi,Kapali,140.0,125.0,4.0,8.0,3.0,2.0,5.0,7.0,5.0,2.0,0.0,var,var,var,yok,1.0,2.0,0.0,0.0,5_7_Bucuk_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,0_Oturuma_Hazir,4,Merkezi_Pay_Olcer,Merkezi,Kapali,165.0,149.0,9.0,0.0,0.0,4.0,5.0,8.0,5.0,2.0,0.0,var,var,var,yok,2.0,4.0,6.0,2.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Tepekoy_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Klima,Klima,Kapali,145.0,102.0,4.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Zeytinli_Koyu,Satilik,5,Bilinmiyor,Soba,Soba,Acik_Amerikan,60.0,50.0,3.0,5.0,4.0,0.0,0.0,0.0,1.0,1.0,1.0,var,yok,yok,var,0.0,2.0,1.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,4,Bahce_Kati,Kombi_Elektrik,Kombi_Elektrik,Acik_Amerikan,170.0,140.0,4.0,4.0,4.0,0.0,4.0,2.0,3.0,2.0,1.0,var,yok,var,yok,0.0,1.0,1.0,0.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Cinarli_Mh.,Satilik,5,Bilinmiyor,Yok,Yok,Bilinmiyor,123.0,110.0,2.0,5.0,4.0,0.0,0.0,1.0,1.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,Bahce_Kati,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,120.0,105.0,3.0,8.0,3.0,0.0,4.0,6.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Esenler_Mah.,Satilik,4,Zemin_Kat,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,143.0,116.0,4.0,4.0,4.0,0.0,3.0,5.0,5.0,2.0,1.0,var,var,var,yok,2.0,3.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,1,3,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,105.0,95.0,8.0,1.0,4.0,3.0,5.0,3.0,5.0,1.0,1.0,var,yok,var,yok,0.0,0.0,0.0,0.0,4_5_Milyon_TL_Arasi
+Canakkale,Yenice,Kurtulus_Mh.,Satilik,0_Oturuma_Hazir,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,82.0,73.0,3.0,0.0,0.0,2.0,5.0,4.0,5.0,1.0,0.0,var,var,var,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Merkez,Barbaros_Mah.,Satilik,6_10_arasi,6,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,45.0,38.0,2.0,8.0,3.0,6.0,4.0,6.0,5.0,1.0,1.0,var,var,var,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,26_30_arasi,Bilinmiyor,Klima,Klima,Acik_Amerikan,232.0,120.0,4.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,yok,0.0,1.0,1.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Gokceada,Yeni_Mh.,Satilik,0_Oturuma_Hazir,Mustakil,Yerden_Isitma,Yerden_Isitma,Acik_Amerikan,125.0,85.0,4.0,0.0,0.0,1.0,5.0,3.0,5.0,2.0,1.0,var,yok,var,yok,0.0,0.0,0.0,1.0,10_15_Milyon_TL_Arasi
+Canakkale,Yenice,Kislalar_Mh.,Satilik,16_20_arasi,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,140.0,130.0,4.0,16.0,2.0,4.0,5.0,4.0,5.0,1.0,0.0,var,yok,var,yok,0.0,0.0,1.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Gokceada,Diger_Mahalle,Satilik,0_Oturuma_Hazir,Bilinmiyor,Isi_Pompasi,Isi_Pompasi,Acik_Amerikan,220.0,200.0,5.0,0.0,0.0,0.0,0.0,2.0,0.0,4.0,1.0,yok,yok,var,var,3.0,8.0,1.0,2.0,25_50_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Soba,Soba,Acik_Amerikan,80.0,75.0,3.0,21.0,2.0,0.0,0.0,0.0,1.0,2.0,1.0,yok,yok,yok,yok,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gokceada,Zeytinli_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Somine,Somine,Kapali,129.0,120.0,5.0,30.0,1.0,0.0,0.0,0.0,2.0,1.0,0.0,var,yok,yok,yok,0.0,1.0,0.0,1.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,11_15_arasi,Bilinmiyor,Elektrikli_Radyator,Elektrikli_Radyator,Acik_Amerikan,100.0,95.0,4.0,13.0,2.0,0.0,0.0,0.0,2.0,2.0,1.0,var,yok,yok,yok,0.0,1.0,1.0,2.0,25_50_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,26_30_arasi,5,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,220.0,157.0,5.0,30.0,1.0,5.0,5.0,5.0,5.0,2.0,1.0,var,var,var,yok,1.0,3.0,6.0,5.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Gokceada,Cumhuriyet_Mah.,Satilik,6_10_arasi,1,Merkezi,Merkezi,Acik_Amerikan,45.0,40.0,2.0,8.0,3.0,1.0,5.0,2.0,4.0,1.0,1.0,var,yok,yok,var,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,16_20_arasi,Bilinmiyor,Kombi_Elektrik,Kombi_Elektrik,Acik_Amerikan,130.0,129.0,4.0,16.0,2.0,0.0,0.0,0.0,3.0,2.0,1.0,yok,yok,yok,var,0.0,1.0,0.0,1.0,25_50_Milyon_TL_Arasi
+Canakkale,Gelibolu,Camiikebir_Mah.,Satilik,21_25_arasi,Yuksek_Giris,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,120.0,110.0,3.0,21.0,2.0,0.0,4.0,5.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,1_Bucuk_2_Milyon_TL_Arasi
+Canakkale,Merkez,Cevat_Pasa_Mh.,Satilik,31_ve_uzeri,4,Kombi_Dogalgaz,Kombi_Dogalgaz,Kapali,88.0,85.0,3.0,30.0,1.0,4.0,5.0,4.0,5.0,1.0,0.0,var,yok,yok,yok,0.0,0.0,0.0,0.0,3_4_Milyon_TL_Arasi
+Canakkale,Gokceada,Tepekoy_Koyu,Satilik,31_ve_uzeri,Bilinmiyor,Klima,Klima,Acik_Amerikan,150.0,126.0,4.0,30.0,1.0,0.0,0.0,0.0,3.0,1.0,1.0,var,yok,yok,var,0.0,1.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Merkez,Kepez_Bld.,Satilik,6_10_arasi,2,Merkezi_Pay_Olcer,Merkezi,Kapali,140.0,135.0,4.0,8.0,3.0,2.0,5.0,3.0,5.0,2.0,0.0,var,var,yok,yok,0.0,0.0,0.0,0.0,7_Bucuk_10_Milyon_TL_Arasi
+Canakkale,Bozcaada,Cumhuriyet_Mah.,Satilik,21_25_arasi,Bilinmiyor,Klima,Klima,Kapali,180.0,150.0,6.0,21.0,2.0,0.0,0.0,3.0,3.0,3.0,0.0,yok,yok,var,yok,0.0,0.0,0.0,0.0,15_25_Milyon_TL_Arasi
+Canakkale,Gelibolu,Camiikebir_Mah.,Satilik,6_10_arasi,2,Kombi_Dogalgaz,Kombi_Dogalgaz,Acik_Amerikan,55.0,50.0,2.0,8.0,3.0,2.0,5.0,4.0,5.0,1.0,1.0,yok,var,var,yok,0.0,0.0,0.0,0.0,2_3_Milyon_TL_Arasi
+Canakkale,Bozcaada,Alaybey_Mh.,Satilik,21_25_arasi,Bilinmiyor,Kat_Kaloriferi,Kat_Kaloriferi,Acik_Amerikan,400.0,300.0,9.0,21.0,2.0,0.0,0.0,0.0,4.0,4.0,1.0,var,yok,yok,yok,0.0,3.0,4.0,3.0,100_250_Milyon_TL_Arasi
