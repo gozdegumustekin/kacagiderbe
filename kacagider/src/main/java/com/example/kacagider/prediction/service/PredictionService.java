@@ -34,24 +34,26 @@ public class PredictionService {
             InputStream modelStream = new ClassPathResource("emlak_rf_modeli.model").getInputStream();
             wekaModel = (Classifier) weka.core.SerializationHelper.read(modelStream);
 
-            InputStream schemaStream = new ClassPathResource("schema.arff").getInputStream();
+            // schema.arff yerine train_emlak.arff yükleniyor
+            InputStream schemaStream = new ClassPathResource("train_emlak.arff").getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(schemaStream));
             datasetStructure = new Instances(reader);
 
             datasetStructure.setClassIndex(datasetStructure.numAttributes() - 1);
 
-            System.out.println("✅ Weka modeli ve schema başarıyla yüklendi.");
+            System.out.println("✅ Weka modeli ve train_emlak.arff başarıyla yüklendi.");
             System.out.println("Class attribute: " + datasetStructure.classAttribute().name());
 
         } catch (Exception e) {
-            System.err.println("❌ Model veya schema yüklenemedi: " + e.getMessage());
+            System.err.println("❌ Model veya ARFF yüklenemedi: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("Prediction model yüklenemedi.", e);
         }
     }
 
     public PredictionResponse predict(PredictionRequest request) throws Exception {
         if (wekaModel == null || datasetStructure == null) {
-            throw new Exception("Sistem hazır değil. Model veya schema yüklenemedi.");
+            throw new Exception("Sistem hazır değil. Model veya ARFF yüklenemedi.");
         }
 
         Map<String, Object> processedFeatures = predictionInputBuilderService.buildModelInput(request);
