@@ -1,0 +1,200 @@
+package com.example.kacagider.prediction.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/prediction")
+@CrossOrigin(origins = "*")
+public class FormMetadataController {
+
+    @GetMapping("/form-data")
+    public ResponseEntity<Map<String, Object>> getFormData() {
+        Map<String, Object> response = new HashMap<>();
+
+        // 1. Temel Dropdown / Sayısal Alanlar
+        List<Map<String, String>> temelAlanlar = new ArrayList<>();
+        temelAlanlar.add(Map.of("key", "il", "label", "İl", "type", "select"));
+        temelAlanlar.add(Map.of("key", "ilce", "label", "İlçe", "type", "select"));
+        temelAlanlar.add(Map.of("key", "mahalle", "label", "Mahalle", "type", "select"));
+        temelAlanlar.add(Map.of("key", "emlak_tipi", "label", "Emlak Tipi (Satılık/Kiralık)", "type", "select"));
+        temelAlanlar.add(Map.of("key", "metrekare_brut", "label", "Brüt Metrekare", "type", "numeric"));
+        temelAlanlar.add(Map.of("key", "metrekare_net", "label", "Net Metrekare", "type", "numeric"));
+        temelAlanlar.add(Map.of("key", "oda_sayisi_raw", "label", "Oda Sayısı (Örn: 3+1)", "type", "select"));
+        temelAlanlar.add(Map.of("key", "bina_yasi_raw", "label", "Bina Yaşı", "type", "select"));
+        temelAlanlar.add(Map.of("key", "bulundugu_kat_raw", "label", "Bulunduğu Kat", "type", "select"));
+        temelAlanlar.add(Map.of("key", "kat_sayisi", "label", "Binadaki Kat Sayısı", "type", "numeric"));
+        temelAlanlar.add(Map.of("key", "isitma_raw", "label", "Isıtma Tipi", "type", "select"));
+        temelAlanlar.add(Map.of("key", "banyo_sayisi", "label", "Banyo Sayısı", "type", "numeric"));
+        temelAlanlar.add(Map.of("key", "mutfak_raw", "label", "Mutfak Tipi", "type", "select"));
+
+        response.put("temel_alanlar", temelAlanlar);
+
+        // 2. Evet/Hayır (Checkbox) Olacak 150+ Ekstra Özellik
+        List<Map<String, String>> ozellikler = new ArrayList<>();
+        ozellikler.add(Map.of("key", "Bati", "label", "Batı"));
+        ozellikler.add(Map.of("key", "Dogu", "label", "Doğu"));
+        ozellikler.add(Map.of("key", "Guney", "label", "Güney"));
+        ozellikler.add(Map.of("key", "Kuzey", "label", "Kuzey"));
+        ozellikler.add(Map.of("key", "ADSL", "label", "ADSL"));
+        ozellikler.add(Map.of("key", "Ahsap_Dograma", "label", "Ahşap Doğrama"));
+        ozellikler.add(Map.of("key", "Akilli_Ev", "label", "Akıllı Ev"));
+        ozellikler.add(Map.of("key", "Alarm_Hirsiz", "label", "Alarm (Hırsız)"));
+        ozellikler.add(Map.of("key", "Alarm_Yangin", "label", "Alarm (Yangın)"));
+        ozellikler.add(Map.of("key", "Alaturka_Tuvalet", "label", "Alaturka Tuvalet"));
+        ozellikler.add(Map.of("key", "Aluminyum_Dograma", "label", "Alüminyum Doğrama"));
+        ozellikler.add(Map.of("key", "Amerikan_Kapi", "label", "Amerikan Kapı"));
+        ozellikler.add(Map.of("key", "Ankastre_Firin", "label", "Ankastre Fırın"));
+        ozellikler.add(Map.of("key", "Barbeku", "label", "Barbekü"));
+        ozellikler.add(Map.of("key", "Beyaz_Esya", "label", "Beyaz Eşya"));
+        ozellikler.add(Map.of("key", "Boyali", "label", "Boyalı"));
+        ozellikler.add(Map.of("key", "Bulasik_Makinesi", "label", "Bulaşık Makinesi"));
+        ozellikler.add(Map.of("key", "Buzdolabi", "label", "Buzdolabı"));
+        ozellikler.add(Map.of("key", "Camasir_Kurutma_Makinesi", "label", "Çamaşır Kurutma Makinesi"));
+        ozellikler.add(Map.of("key", "Camasir_Makinesi", "label", "Çamaşır Makinesi"));
+        ozellikler.add(Map.of("key", "Camasir_Odasi", "label", "Çamaşır Odası"));
+        ozellikler.add(Map.of("key", "Celik_Kapi", "label", "Çelik Kapı"));
+        ozellikler.add(Map.of("key", "Dusakabin", "label", "Duşakabin"));
+        ozellikler.add(Map.of("key", "Duvar_Kagidi", "label", "Duvar Kağıdı"));
+        ozellikler.add(Map.of("key", "Ebeveyn_Banyosu", "label", "Ebeveyn Banyosu"));
+        ozellikler.add(Map.of("key", "Firin", "label", "Fırın"));
+        ozellikler.add(Map.of("key", "Fiber_Internet", "label", "Fiber İnternet"));
+        ozellikler.add(Map.of("key", "Giyinme_Odasi", "label", "Giyinme Odası"));
+        ozellikler.add(Map.of("key", "Gomme_Dolap", "label", "Gömme Dolap"));
+        ozellikler.add(Map.of("key", "Goruntulu_Diyafon", "label", "Görüntülü Diyafon"));
+        ozellikler.add(Map.of("key", "Hilton_Banyo", "label", "Hilton Banyo"));
+        ozellikler.add(Map.of("key", "Intercom_Sistemi", "label", "Intercom Sistemi"));
+        ozellikler.add(Map.of("key", "Isicam", "label", "Isıcam"));
+        ozellikler.add(Map.of("key", "Jakuzi", "label", "Jakuzi"));
+        ozellikler.add(Map.of("key", "Kartonpiyer", "label", "Kartonpiyer"));
+        ozellikler.add(Map.of("key", "Kiler", "label", "Kiler"));
+        ozellikler.add(Map.of("key", "Klima", "label", "Klima"));
+        ozellikler.add(Map.of("key", "Kuvet", "label", "Küvet"));
+        ozellikler.add(Map.of("key", "Laminat_Zemin", "label", "Laminat Zemin"));
+        ozellikler.add(Map.of("key", "Marley", "label", "Marley"));
+        ozellikler.add(Map.of("key", "Mobilya", "label", "Mobilya"));
+        ozellikler.add(Map.of("key", "Mutfak_Ankastre", "label", "Mutfak (Ankastre)"));
+        ozellikler.add(Map.of("key", "Mutfak_Laminat", "label", "Mutfak (Laminat)"));
+        ozellikler.add(Map.of("key", "Mutfak_Dogalgazi", "label", "Mutfak Doğalgazı"));
+        ozellikler.add(Map.of("key", "Panjur_Jaluzi", "label", "Panjur/Jaluzi"));
+        ozellikler.add(Map.of("key", "Parke_Zemin", "label", "Parke Zemin"));
+        ozellikler.add(Map.of("key", "PVC_Dograma", "label", "PVC Doğrama"));
+        ozellikler.add(Map.of("key", "Seramik_Zemin", "label", "Seramik Zemin"));
+        ozellikler.add(Map.of("key", "Set_Ustu_Ocak", "label", "Set Üstü Ocak"));
+        ozellikler.add(Map.of("key", "Spot_Aydinlatma", "label", "Spot Aydınlatma"));
+        ozellikler.add(Map.of("key", "Sofben", "label", "Şofben"));
+        ozellikler.add(Map.of("key", "Somine", "label", "Şömine"));
+        ozellikler.add(Map.of("key", "Teras", "label", "Teras"));
+        ozellikler.add(Map.of("key", "Termosifon", "label", "Termosifon"));
+        ozellikler.add(Map.of("key", "Vestiyer", "label", "Vestiyer"));
+        ozellikler.add(Map.of("key", "Yuz_Tanima_ve_Parmak_Izi", "label", "Yüz Tanıma & Parmak İzi"));
+        ozellikler.add(Map.of("key", "Arac_Sarj_Istasyonu", "label", "Araç Şarj İstasyonu"));
+        ozellikler.add(Map.of("key", "24_Saat_Guvenlik", "label", "24 Saat Güvenlik"));
+        ozellikler.add(Map.of("key", "Apartman_Gorevlisi", "label", "Apartman Görevlisi"));
+        ozellikler.add(Map.of("key", "Buhar_Odasi", "label", "Buhar Odası"));
+        ozellikler.add(Map.of("key", "Cocuk_Oyun_Parki", "label", "Çocuk Oyun Parkı"));
+        ozellikler.add(Map.of("key", "Hamam", "label", "Hamam"));
+        ozellikler.add(Map.of("key", "Hidrofor", "label", "Hidrofor"));
+        ozellikler.add(Map.of("key", "Isi_Yalitimi", "label", "Isı Yalıtımı"));
+        ozellikler.add(Map.of("key", "Jenerator", "label", "Jeneratör"));
+        ozellikler.add(Map.of("key", "Kablo_TV", "label", "Kablo TV"));
+        ozellikler.add(Map.of("key", "Kamera_Sistemi", "label", "Kamera Sistemi"));
+        ozellikler.add(Map.of("key", "Kopek_Parki", "label", "Köpek Parkı"));
+        ozellikler.add(Map.of("key", "Kres", "label", "Kreş"));
+        ozellikler.add(Map.of("key", "Mustakil_Havuzlu", "label", "Müstakil Havuzlu"));
+        ozellikler.add(Map.of("key", "Sauna", "label", "Sauna"));
+        ozellikler.add(Map.of("key", "Ses_Yalitimi", "label", "Ses Yalıtımı"));
+        ozellikler.add(Map.of("key", "Siding", "label", "Siding"));
+        ozellikler.add(Map.of("key", "Spor_Alani", "label", "Spor Alanı"));
+        ozellikler.add(Map.of("key", "Su_Deposu", "label", "Su Deposu"));
+        ozellikler.add(Map.of("key", "Tenis_Kortu", "label", "Tenis Kortu"));
+        ozellikler.add(Map.of("key", "Uydu", "label", "Uydu"));
+        ozellikler.add(Map.of("key", "Yangin_Merdiveni", "label", "Yangın Merdiveni"));
+        ozellikler.add(Map.of("key", "Yuzme_Havuzu_Acik", "label", "Yüzme Havuzu (Açık)"));
+        ozellikler.add(Map.of("key", "Yuzme_Havuzu_Kapali", "label", "Yüzme Havuzu (Kapalı)"));
+        ozellikler.add(Map.of("key", "Alisveris_Merkezi", "label", "Alışveriş Merkezi"));
+        ozellikler.add(Map.of("key", "Belediye", "label", "Belediye"));
+        ozellikler.add(Map.of("key", "Cami", "label", "Cami"));
+        ozellikler.add(Map.of("key", "Cemevi", "label", "Cemevi"));
+        ozellikler.add(Map.of("key", "Denize_Sifir", "label", "Denize Sıfır"));
+        ozellikler.add(Map.of("key", "Eczane", "label", "Eczane"));
+        ozellikler.add(Map.of("key", "Eglence_Merkezi", "label", "Eğlence Merkezi"));
+        ozellikler.add(Map.of("key", "Fuar", "label", "Fuar"));
+        ozellikler.add(Map.of("key", "Gole_Sifir", "label", "Göle Sıfır"));
+        ozellikler.add(Map.of("key", "Hastane", "label", "Hastane"));
+        ozellikler.add(Map.of("key", "Havra", "label", "Havra"));
+        ozellikler.add(Map.of("key", "Ilkokul_Ortaokul", "label", "İlkokul-Ortaokul"));
+        ozellikler.add(Map.of("key", "Itfaiye", "label", "İtfaiye"));
+        ozellikler.add(Map.of("key", "Kilise", "label", "Kilise"));
+        ozellikler.add(Map.of("key", "Lise", "label", "Lise"));
+        ozellikler.add(Map.of("key", "Market", "label", "Market"));
+        ozellikler.add(Map.of("key", "Park", "label", "Park"));
+        ozellikler.add(Map.of("key", "Plaj", "label", "Plaj"));
+        ozellikler.add(Map.of("key", "Polis_Merkezi", "label", "Polis Merkezi"));
+        ozellikler.add(Map.of("key", "Saglik_Ocagi", "label", "Sağlık Ocağı"));
+        ozellikler.add(Map.of("key", "Semt_Pazari", "label", "Semt Pazarı"));
+        ozellikler.add(Map.of("key", "Spor_Salonu", "label", "Spor Salonu"));
+        ozellikler.add(Map.of("key", "Sehir_Merkezi", "label", "Şehir Merkezi"));
+        ozellikler.add(Map.of("key", "Universite", "label", "Üniversite"));
+        ozellikler.add(Map.of("key", "Anayol", "label", "Anayol"));
+        ozellikler.add(Map.of("key", "Avrasya_Tuneli", "label", "Avrasya Tüneli"));
+        ozellikler.add(Map.of("key", "Bogaz_Kopruleri", "label", "Boğaz Köprüleri"));
+        ozellikler.add(Map.of("key", "Cadde", "label", "Cadde"));
+        ozellikler.add(Map.of("key", "Deniz_Otobusu", "label", "Deniz Otobüsü"));
+        ozellikler.add(Map.of("key", "Dolmus", "label", "Dolmuş"));
+        ozellikler.add(Map.of("key", "E_5", "label", "E-5"));
+        ozellikler.add(Map.of("key", "Havaalani", "label", "Havaalanı"));
+        ozellikler.add(Map.of("key", "Iskele", "label", "İskele"));
+        ozellikler.add(Map.of("key", "Marmaray", "label", "Marmaray"));
+        ozellikler.add(Map.of("key", "Metro", "label", "Metro"));
+        ozellikler.add(Map.of("key", "Metrobus", "label", "Metrobüs"));
+        ozellikler.add(Map.of("key", "Minibus", "label", "Minibüs"));
+        ozellikler.add(Map.of("key", "Otobus_Duragi", "label", "Otobüs Durağı"));
+        ozellikler.add(Map.of("key", "Sahil", "label", "Sahil"));
+        ozellikler.add(Map.of("key", "TEM", "label", "TEM"));
+        ozellikler.add(Map.of("key", "Tramvay", "label", "Tramvay"));
+        ozellikler.add(Map.of("key", "Tren_Istasyonu", "label", "Tren İstasyonu"));
+        ozellikler.add(Map.of("key", "Bogaz", "label", "Boğaz"));
+        ozellikler.add(Map.of("key", "Deniz", "label", "Deniz"));
+        ozellikler.add(Map.of("key", "Doga", "label", "Doğa"));
+        ozellikler.add(Map.of("key", "Gol", "label", "Göl"));
+        ozellikler.add(Map.of("key", "Havuz", "label", "Havuz"));
+        ozellikler.add(Map.of("key", "Nehir", "label", "Nehir"));
+        ozellikler.add(Map.of("key", "Park_ve_Yesil_Alan", "label", "Park & Yeşil Alan"));
+        ozellikler.add(Map.of("key", "Sehir", "label", "Şehir"));
+        ozellikler.add(Map.of("key", "Dubleks", "label", "Dubleks"));
+        ozellikler.add(Map.of("key", "En_Ust_Kat", "label", "En Üst Kat"));
+        ozellikler.add(Map.of("key", "Ara_Kat", "label", "Ara Kat"));
+        ozellikler.add(Map.of("key", "Ara_Kat_Dubleks", "label", "Ara Kat Dubleks"));
+        ozellikler.add(Map.of("key", "Bahce_Dubleksi", "label", "Bahçe Dubleksi"));
+        ozellikler.add(Map.of("key", "Cati_Dubleksi", "label", "Çatı Dubleksi"));
+        ozellikler.add(Map.of("key", "Forleks", "label", "Forleks"));
+        ozellikler.add(Map.of("key", "Ters_Dubleks", "label", "Ters Dubleks"));
+        ozellikler.add(Map.of("key", "Tripleks", "label", "Tripleks"));
+        ozellikler.add(Map.of("key", "Arac_Park_Yeri", "label", "Araç Park Yeri"));
+        ozellikler.add(Map.of("key", "Engelliye_Uygun_Asansor", "label", "Engelliye Uygun Asansör"));
+        ozellikler.add(Map.of("key", "Engelliye_Uygun_Banyo", "label", "Engelliye Uygun Banyo"));
+        ozellikler.add(Map.of("key", "Engelliye_Uygun_Mutfak", "label", "Engelliye Uygun Mutfak"));
+        ozellikler.add(Map.of("key", "Engelliye_Uygun_Park", "label", "Engelliye Uygun Park"));
+        ozellikler.add(Map.of("key", "Genis_Koridor", "label", "Geniş Koridor"));
+        ozellikler.add(Map.of("key", "Giris_Rampa", "label", "Giriş / Rampa"));
+        ozellikler.add(Map.of("key", "Merdiven", "label", "Merdiven"));
+        ozellikler.add(Map.of("key", "Oda_Kapisi", "label", "Oda Kapısı"));
+        ozellikler.add(Map.of("key", "Priz_Elektrik_Anahtari", "label", "Priz / Elektrik Anahtarı"));
+        ozellikler.add(Map.of("key", "Tutamak_Korkuluk", "label", "Tutamak / Korkuluk"));
+        ozellikler.add(Map.of("key", "Tuvalet", "label", "Tuvalet"));
+        ozellikler.add(Map.of("key", "Yuzme_Havuzu", "label", "Yüzme Havuzu"));
+
+        response.put("ekstra_ozellikler", ozellikler);
+
+        return ResponseEntity.ok(response);
+    }
+}
