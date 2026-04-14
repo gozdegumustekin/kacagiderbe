@@ -1,19 +1,27 @@
 package com.example.kacagider.prediction.dto;
 
-import lombok.Data;
-import java.util.Map;
+import java.util.List;
 
-@Data
-public class PredictionRequest {
+public record PredictionRequest(
+        String il,
+        String ilce,
+        String mahalle,
+        String emlakTipi,
+        Double metrekareBrut,
+        Double metrekareNet,
+        String odaSayisiRaw,
+        String binaYasiRaw,
+        String bulunduguKatRaw,
+        Integer katSayisi,
+        String isitmaRaw,
+        Integer banyoSayisi,
+        String mutfakRaw,
 
-    /**
-     * Flutter'dan gelen JSON içindeki tüm anahtar-değer (Key-Value) çiftlerini
-     * dinamik olarak tutan sözlük yapısı.
-     * * Örnek:
-     * "il" -> "Canakkale"
-     * "oda_sayisi_raw" -> "3+1"
-     * "Yuzme_Havuzu_Acik" -> "var"
-     */
-    private Map<String, Object> features;
+        Boolean balkon,
+        Boolean asansor,
+        Boolean otopark,
+        Boolean esyali,
 
+        List<String> yonler,
+        List<String> seciliOzellikler) {
 }
