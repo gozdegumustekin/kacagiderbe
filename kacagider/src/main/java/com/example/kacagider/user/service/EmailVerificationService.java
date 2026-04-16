@@ -21,7 +21,7 @@ public class EmailVerificationService {
     private final UserRepository userRepo;
     private final MailService mailService;
 
-    @Value("${app.verification.tokenMinutes}")
+    @Value("${app.verification.tokenMinutes:60}")
     private long tokenMinutes;
 
     public void createAndSendCode(UUID userId, String email) {
