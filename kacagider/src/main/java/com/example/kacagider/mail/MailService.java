@@ -18,17 +18,22 @@ public class MailService {
 
     public void sendHtml(String to, String subject, String html) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
+            System.out.println("MAIL GONDERIMI BASLADI -> to=" + to + ", subject=" + subject);
 
+            MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
             helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(html, true); // true = HTML
+            helper.setText(html, true);
 
             mailSender.send(message);
+
+            System.out.println("MAIL GONDERILDI -> " + to);
         } catch (Exception e) {
+            System.out.println("MAIL HATASI -> " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("Mail gönderilemedi", e);
         }
     }
