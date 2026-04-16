@@ -10,8 +10,10 @@ import com.example.kacagider.user.service.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,22 @@ public class AuthService {
     private final JwtService jwtService;
     private final EmailVerificationService emailVerificationService;
 
+    @Transactional
     public void register(RegisterRequest req) {
         String email = req.email().trim().toLowerCase();
 
-        if (userRepo.existsByEmail(email)) {
-            throw new IllegalArgumentException("Bu email zaten kayıtlı.");
+        Optional<User> existingUserOpt = userRepo.findByEmail(email);
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+
+            if (existingUser.isEmailVerified()) {
+                throw new IllegalArgumentException("Bu email zaten kayıtlı.");
+            }
+
+            // Kayıt var ama email doğrulanmamışsa yeni kod gönder
+            emailVerificationService.createAndSendCode(existingUser.getId(), existingUser.getEmail());
+            return;
         }
 
         User user = User.builder()
@@ -36,9 +49,11 @@ public class AuthService {
                 .createdAt(Instant.now())
                 .build();
 
-        userRepo.save(user);
+        User savedUser = userRepo.save(user);
 
-        emailVerificationService.createAndSendCode(user.getId(), user.getEmail());
+        // Mail gönderimi hata verirse RuntimeException fırlayacağı için
+        // @Transactional sayesinde user/token kaydı rollback olur
+        emailVerificationService.createAndSendCode(savedUser.getId(), savedUser.getEmail());
     }
 
     public AuthResponse login(LoginRequest req) {
