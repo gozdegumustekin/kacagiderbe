@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers(
+                                "/api/prediction/health",
                                 "/swagger",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
