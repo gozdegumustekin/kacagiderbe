@@ -21,7 +21,7 @@ public class MailService {
             System.out.println("MAIL GONDERIMI BASLADI -> to=" + to + ", subject=" + subject);
 
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
             helper.setFrom(from);
             helper.setTo(to);
@@ -34,7 +34,7 @@ public class MailService {
         } catch (Exception e) {
             System.out.println("MAIL HATASI -> " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Mail gönderilemedi", e);
+            throw new RuntimeException("Mail gönderilemedi: " + e.getMessage(), e);
         }
     }
 }
