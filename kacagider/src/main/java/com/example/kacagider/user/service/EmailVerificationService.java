@@ -25,12 +25,10 @@ public class EmailVerificationService {
     private long tokenMinutes;
 
     public void createAndSendCode(UUID userId, String email) {
-
-        // 6 haneli kod
-        String code = String.format("%06d",
-                new SecureRandom().nextInt(1_000_000));
-
+        String code = String.format("%06d", new SecureRandom().nextInt(1_000_000));
         String token = UUID.randomUUID().toString().replace("-", "");
+
+        System.out.println("DOGRULAMA KODU OLUSTURULDU -> email=" + email + ", code=" + code);
 
         EmailVerificationToken evt = EmailVerificationToken.builder()
                 .token(token)
