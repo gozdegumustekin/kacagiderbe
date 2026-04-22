@@ -1,11 +1,14 @@
 package com.example.kacagider.prediction.service;
 
 import com.example.kacagider.prediction.dto.*;
+import com.example.kacagider.prediction.entity.PredictionImage;
 import com.example.kacagider.prediction.entity.PredictionRecord;
+import com.example.kacagider.prediction.repo.PredictionImageRepository;
 import com.example.kacagider.prediction.repo.PredictionRecordRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +19,10 @@ import java.util.UUID;
 public class PredictionRecordService {
 
     private final PredictionRecordRepository predictionRecordRepository;
+    private final PredictionImageRepository predictionImageRepository;
     private final PredictionService predictionService;
     private final PredictionInputBuilderService predictionInputBuilderService;
+    private final FileStorageService fileStorageService;
     private final ObjectMapper objectMapper;
 
     public CreatePredictionRecordResponse create(UUID userId, PredictionRequest request) {
@@ -86,6 +91,76 @@ public class PredictionRecordService {
                 record.getPreviewJson(),
                 record.getPredictionJson(),
                 record.getCreatedAt());
+    }
+
+    public List<PredictionImageResponse> attachImages(UUID userId, UUID predictionId, List<MultipartFile> images) {
+        PredictionRecord record = predictionRecordRepository.findByIdAndUserId(predictionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Kayıt bulunamadı."));
+
+        if (images == null || images.isEmpty()) {
+            return List.of();
+        }
+
+        long existingCount = predictionImageRepository.countByPredictionRecord_Id(predictionId);
+
+        return java.util.stream.IntStream.range(0, images.size())
+                .mapToObj(i -> {
+                    MultipartFile file = images.get(i);
+                    FileStorageService.StoredFileInfo stored = fileStorageService.storePredictionImage(predictionId,
+                            file);
+
+                    PredictionImage image = PredictionImage.builder()
+                            .predictionRecord(record)
+                            .storagePath(stored.relativePath())
+                            .publicUrl(stored.publicUrl())
+                            .originalFilename(stored.originalFilename())
+                            .contentType(stored.contentType())
+                            .sizeBytes(stored.sizeBytes())
+                            .sortOrder((int) existingCount + i)
+                            .resnetStatus("PENDING")
+                            .build();
+
+                    PredictionImage saved = predictionImageRepository.save(image);
+                    return toResponse(saved);
+                })
+                .toList();
+    }
+
+    public List<PredictionImageResponse> getImages(UUID userId, UUID predictionId) {
+        predictionRecordRepository.findByIdAndUserId(predictionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Kayıt bulunamadı."));
+
+        return predictionImageRepository.findAllByPredictionRecord_IdOrderBySortOrderAscCreatedAtAsc(predictionId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public void deleteImage(UUID userId, UUID predictionId, UUID imageId) {
+        predictionRecordRepository.findByIdAndUserId(predictionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Kayıt bulunamadı."));
+
+        PredictionImage image = predictionImageRepository.findByIdAndPredictionRecord_Id(imageId, predictionId)
+                .orElseThrow(() -> new IllegalArgumentException("Fotoğraf bulunamadı."));
+
+        fileStorageService.deleteByRelativePath(image.getStoragePath());
+        predictionImageRepository.delete(image);
+    }
+
+    private PredictionImageResponse toResponse(PredictionImage image) {
+        return new PredictionImageResponse(
+                image.getId(),
+                image.getPredictionRecord().getId(),
+                image.getOriginalFilename(),
+                image.getContentType(),
+                image.getSizeBytes(),
+                image.getSortOrder(),
+                image.getStoragePath(),
+                image.getPublicUrl(),
+                image.getResnetStatus(),
+                image.getResnetLabel(),
+                image.getResnetScore(),
+                image.getCreatedAt());
     }
 
     private void validateRequest(PredictionRequest request) {

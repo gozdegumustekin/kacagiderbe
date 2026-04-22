@@ -42,20 +42,23 @@ public class PredictionRecord {
     @Column(nullable = false)
     private Double metrekareNet;
 
-    // Tüm gelen form verisi
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb", nullable = false)
     private JsonNode requestJson;
 
-    // Model input preview / skor / engineered yapı
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode previewJson;
 
-    // Tahmin sonucu
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode predictionJson;
+
+    @Column
+    private String imageQualityLabel;
+
+    @Column
+    private Double imageQualityScore;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
