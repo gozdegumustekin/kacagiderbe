@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.upload.root}")
+    @Value("${app.upload.root:/data/uploads}")
     private String uploadRoot;
 
     @Value("${app.upload.public-prefix:/uploads}")
