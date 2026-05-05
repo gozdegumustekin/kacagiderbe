@@ -37,6 +37,13 @@ public class PredictionController {
                     HttpStatus.BAD_REQUEST.value(),
                     "Geçersiz istek",
                     e.getMessage()));
+        } catch (IllegalStateException e) {
+            // Model henüz yüklenmediyse 503 döndür — frontend bu durumu UI'da
+            // "model hazır değil" şeklinde gösterebilir.
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorBody(
+                    HttpStatus.SERVICE_UNAVAILABLE.value(),
+                    "Tahmin modeli henüz hazır değil",
+                    e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -70,7 +77,10 @@ public class PredictionController {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", "UP");
         response.put("service", "prediction");
-        response.put("message", "Prediction service çalışıyor.");
+        response.put("modelReady", predictionService.isModelHazir());
+        response.put("message", predictionService.isModelHazir()
+                ? "Prediction service çalışıyor — model yüklü."
+                : "Prediction service çalışıyor — model henüz yüklenmedi (predict devre dışı).");
         return ResponseEntity.ok(response);
     }
 

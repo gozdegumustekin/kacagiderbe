@@ -37,7 +37,15 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/prediction/health")
+                                "/api/prediction/health",
+                                // Form metadata ve preview login OLMADAN da erişilebilir.
+                                // /api/predictions altındaki kayıt CRUD'u JWT ister
+                                // (PredictionRecordController kullanır).
+                                "/api/prediction/form-data",
+                                "/api/prediction/preview-input",
+                                // /api/prediction/predict de açık olabilir — ama
+                                // istemiyorsan bu satırı sil, predict JWT ister.
+                                "/api/prediction/predict")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/test-mail").permitAll()

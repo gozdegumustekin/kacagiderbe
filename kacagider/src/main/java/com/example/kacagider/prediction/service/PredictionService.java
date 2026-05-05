@@ -2,7 +2,10 @@ package com.example.kacagider.prediction.service;
 
 import com.example.kacagider.prediction.dto.PredictionRequest;
 import com.example.kacagider.prediction.dto.PredictionResponse;
+import com.example.kacagider.prediction.metadata.FeaturePipelineConfig;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import weka.classifiers.Classifier;
@@ -14,46 +17,109 @@ import weka.core.Instances;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class PredictionService {
 
     private final PredictionInputBuilderService predictionInputBuilderService;
+    private final FeaturePipelineConfig pipelineConfig;
+
+    /**
+     * application.properties'teki model.enabled flag'i.
+     * false → model yüklenmeye çalışılmaz, predict çağrıları
+     * "model henüz hazır değil" hatası verir; uygulama yine ayağa kalkar.
+     */
+    @Value("${model.enabled:true}")
+    private boolean modelEnabled;
+
+    /**
+     * application.properties'teki model.arff.path — varsayılan
+     * train_emlak_hepsi.arff.
+     * Eski model'i denemek istersen "train_emlak.arff" yapabilirsin.
+     */
+    @Value("${model.arff.path:train_emlak_hepsi.arff}")
+    private String arffPath;
+
+    @Value("${model.file.path:emlak_rf_modeli.model}")
+    private String modelPath;
 
     private Classifier wekaModel;
     private Instances datasetStructure;
+    private boolean modelHazir = false;
 
-    public PredictionService(PredictionInputBuilderService predictionInputBuilderService) {
+    @Autowired
+    public PredictionService(PredictionInputBuilderService predictionInputBuilderService,
+            FeaturePipelineConfig pipelineConfig) {
         this.predictionInputBuilderService = predictionInputBuilderService;
+        this.pipelineConfig = pipelineConfig;
     }
 
     @PostConstruct
     public void loadModel() {
-        try {
-            InputStream modelStream = new ClassPathResource("emlak_rf_modeli.model").getInputStream();
-            wekaModel = (Classifier) weka.core.SerializationHelper.read(modelStream);
+        if (!modelEnabled) {
+            System.out.println("ℹ️  model.enabled=false → Weka modeli YÜKLENMEDİ. " +
+                    "predict çağrıları reddedilecek; diğer endpoint'ler çalışır.");
+            return;
+        }
 
-            // schema.arff yerine train_emlak.arff yükleniyor
-            InputStream schemaStream = new ClassPathResource("train_emlak.arff").getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(schemaStream));
-            datasetStructure = new Instances(reader);
+        try {
+            // ARFF (şema) ve .model dosyaları classpath'te (resources/ altında) olmalı
+            ClassPathResource modelResource = new ClassPathResource(modelPath);
+            ClassPathResource arffResource = new ClassPathResource(arffPath);
+
+            if (!modelResource.exists()) {
+                System.err.println("⚠️  Model dosyası bulunamadı: " + modelPath +
+                        " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
+                return;
+            }
+            if (!arffResource.exists()) {
+                System.err.println("⚠️  ARFF dosyası bulunamadı: " + arffPath +
+                        " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
+                return;
+            }
+
+            try (InputStream modelStream = modelResource.getInputStream()) {
+                wekaModel = (Classifier) weka.core.SerializationHelper.read(modelStream);
+            }
+
+            try (InputStream schemaStream = arffResource.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(schemaStream))) {
+                datasetStructure = new Instances(reader);
+            }
 
             datasetStructure.setClassIndex(datasetStructure.numAttributes() - 1);
+            modelHazir = true;
 
-            System.out.println("✅ Weka modeli ve train_emlak.arff başarıyla yüklendi.");
-            System.out.println("Class attribute: " + datasetStructure.classAttribute().name());
+            System.out.println("✅ Weka modeli ve " + arffPath + " başarıyla yüklendi.");
+            System.out.println("   Class attribute: " + datasetStructure.classAttribute().name());
+            System.out.println("   Toplam attribute: " + datasetStructure.numAttributes());
+            System.out.println("   Pipeline config v" + pipelineConfig.getVersion());
 
         } catch (Exception e) {
-            System.err.println("❌ Model veya ARFF yüklenemedi: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Prediction model yüklenemedi.", e);
+            System.err.println("⚠️  Model veya ARFF yüklenirken hata: " + e.getMessage() +
+                    " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
+            modelHazir = false;
         }
     }
 
+    /**
+     * predict endpoint'inin kullanılabilir olup olmadığı — health check'te de
+     * gösterilebilir.
+     */
+    public boolean isModelHazir() {
+        return modelHazir;
+    }
+
     public PredictionResponse predict(PredictionRequest request) throws Exception {
-        if (wekaModel == null || datasetStructure == null) {
-            throw new Exception("Sistem hazır değil. Model veya ARFF yüklenemedi.");
+        if (!modelHazir) {
+            throw new IllegalStateException(
+                    "Tahmin modeli henüz hazır değil. Model dosyası ve ARFF " +
+                            "src/main/resources/ altında olmalı. " +
+                            "Şu an aranıyor: " + modelPath + " / " + arffPath);
         }
 
         Map<String, Object> processedFeatures = predictionInputBuilderService.buildModelInput(request);
@@ -67,108 +133,77 @@ public class PredictionService {
 
         for (int i = 0; i < datasetStructure.numAttributes(); i++) {
             Attribute attr = datasetStructure.attribute(i);
-
-            if (attr.index() == datasetStructure.classIndex()) {
+            if (attr.index() == datasetStructure.classIndex())
                 continue;
-            }
 
             String columnName = attr.name();
-
-            if (!processedFeatures.containsKey(columnName)) {
+            if (!processedFeatures.containsKey(columnName))
                 continue;
-            }
 
             Object value = processedFeatures.get(columnName);
-
             try {
-                if (value == null) {
+                if (value == null)
                     continue;
-                }
 
                 if (attr.isNumeric()) {
                     newInstance.setValue(attr, Double.parseDouble(value.toString()));
                 } else if (attr.isNominal()) {
                     String nominalValue = value.toString();
-
                     if (attr.indexOfValue(nominalValue) >= 0) {
                         newInstance.setValue(attr, nominalValue);
                     } else if (attr.indexOfValue("bilinmiyor") >= 0) {
                         newInstance.setValue(attr, "bilinmiyor");
+                    } else if (attr.indexOfValue("yok") >= 0) {
+                        newInstance.setValue(attr, "yok");
                     }
                 } else if (attr.isString()) {
                     newInstance.setValue(attr, value.toString());
                 }
-
             } catch (Exception ignored) {
             }
         }
 
         double predictionIndex = wekaModel.classifyInstance(newInstance);
-
         Attribute classAttr = datasetStructure.classAttribute();
-        String predictedLabel;
-
-        if (classAttr.isNominal()) {
-            predictedLabel = classAttr.value((int) predictionIndex);
-        } else {
-            predictedLabel = String.valueOf(predictionIndex);
-        }
+        String predictedLabel = classAttr.isNominal()
+                ? classAttr.value((int) predictionIndex)
+                : String.valueOf(predictionIndex);
 
         String displayText = formatPriceLabel(predictedLabel);
 
-        Integer guvenlikSkoru = toInt(processedFeatures.get("guvenlik_skoru"));
-        Integer luksSkoru = toInt(processedFeatures.get("luks_skoru"));
-        Integer sosyalSkoru = toInt(processedFeatures.get("sosyal_skoru"));
-        Integer lokasyonSkoru = toInt(processedFeatures.get("lokasyon_skoru"));
+        Set<String> seciliHamIsimler = onlySelectedHamIsimler(request);
+        Map<String, Integer> skorCounts = new LinkedHashMap<>();
+        for (String grupAdi : pipelineConfig.getSkorGruplari().keySet()) {
+            int count = 0;
+            for (String ozellik : pipelineConfig.getSkorOzellikleri(grupAdi)) {
+                if (seciliHamIsimler.contains(ozellik))
+                    count++;
+            }
+            skorCounts.put(grupAdi, count);
+        }
 
         return new PredictionResponse(
                 predictedLabel,
                 displayText,
-                guvenlikSkoru,
-                luksSkoru,
-                sosyalSkoru,
-                lokasyonSkoru,
+                skorCounts,
                 "Tahmini fiyat aralığı başarıyla hesaplandı.");
     }
 
-    private Integer toInt(Object value) {
-        if (value == null) {
-            return 0;
+    private Set<String> onlySelectedHamIsimler(PredictionRequest request) {
+        Map<String, Boolean> map = request.ozelliklerOrEmpty();
+        Set<String> out = new LinkedHashSet<>();
+        for (var e : map.entrySet()) {
+            if (Boolean.TRUE.equals(e.getValue()) && e.getKey() != null && !e.getKey().isBlank()) {
+                out.add(e.getKey().trim());
+            }
         }
-        try {
-            return (int) Math.round(Double.parseDouble(value.toString()));
-        } catch (Exception e) {
-            return 0;
-        }
+        return out;
     }
 
     private String formatPriceLabel(String label) {
-        if (label == null || label.isBlank()) {
+        if (label == null || label.isBlank())
             return "Bilinmiyor";
-        }
-
-        return switch (label) {
-            case "500_Bin_TL_Alti" -> "500 Bin TL altı";
-            case "500_Bin_1_Milyon_TL_Arasi" -> "500 Bin TL - 1 Milyon TL";
-            case "1_1_Bucuk_Milyon_TL_Arasi" -> "1 Milyon TL - 1.5 Milyon TL";
-            case "1_Bucuk_2_Milyon_TL_Arasi" -> "1.5 Milyon TL - 2 Milyon TL";
-            case "2_3_Milyon_TL_Arasi" -> "2 Milyon TL - 3 Milyon TL";
-            case "3_4_Milyon_TL_Arasi" -> "3 Milyon TL - 4 Milyon TL";
-            case "4_5_Milyon_TL_Arasi" -> "4 Milyon TL - 5 Milyon TL";
-            case "5_7_Bucuk_Milyon_TL_Arasi" -> "5 Milyon TL - 7.5 Milyon TL";
-            case "7_Bucuk_10_Milyon_TL_Arasi" -> "7.5 Milyon TL - 10 Milyon TL";
-            case "10_15_Milyon_TL_Arasi" -> "10 Milyon TL - 15 Milyon TL";
-            case "15_25_Milyon_TL_Arasi" -> "15 Milyon TL - 25 Milyon TL";
-            case "25_50_Milyon_TL_Arasi" -> "25 Milyon TL - 50 Milyon TL";
-            case "50_100_Milyon_TL_Arasi" -> "50 Milyon TL - 100 Milyon TL";
-            case "100_250_Milyon_TL_Arasi" -> "100 Milyon TL - 250 Milyon TL";
-            case "250_500_Milyon_TL_Arasi" -> "250 Milyon TL - 500 Milyon TL";
-            case "500_Milyon_1_Milyar_TL_Arasi" -> "500 Milyon TL - 1 Milyar TL";
-            case "1_2_Milyar_TL_Arasi" -> "1 Milyar TL - 2 Milyar TL";
-            case "2_4_Milyar_TL_Arasi" -> "2 Milyar TL - 4 Milyar TL";
-            case "4_6_Milyar_TL_Arasi" -> "4 Milyar TL - 6 Milyar TL";
-            case "6_Milyar_TL_Ustu" -> "6 Milyar TL ve üzeri";
-            default -> label.replace("_", " ");
-        };
+        Map<String, String> sozluk = pipelineConfig.getFiyatEtiketTurkce();
+        return sozluk.getOrDefault(label, label.replace("_", " "));
     }
 }

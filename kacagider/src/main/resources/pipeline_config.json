@@ -1,0 +1,153 @@
+{
+  "_aciklama": [
+    "Bu dosya Kaca Gider feature pipeline'inin tek dogruluk kaynagidir.",
+    "Hem csv_to_arff_hepsi.py hem de Spring Boot backend bu config'i okur.",
+    "Burada degistirdigin her sey hem yeniden ARFF uretimini hem de backend'in",
+    "modele gonderdigi veriyi etkiler. Frontend ve scraper bundan ETKILENMEZ;",
+    "onlar her zaman tum 155 ozelligi taşır.",
+    "",
+    "version'u her degistirdiginde +1 yap. Backend bunu loglarla yazdirir.",
+    ""
+  ],
+  "version": 1,
+
+  "bireysel_ozellikler": {
+    "_aciklama": "Bu ozellikler skora katilmaz; her biri ayri binary feature olarak modele gider.",
+    "yon": ["Batı", "Doğu", "Güney", "Kuzey"],
+    "manzara": ["Deniz", "Boğaz", "Göl", "Nehir", "Şehir", "Doğa"],
+    "konut_tipi_detaylari": ["Dubleks", "Tripleks", "Çatı Dubleksi", "Bahçe Dubleksi"],
+    "yuksek_sinyal_luks": [
+      "Akıllı Ev", "Şömine", "Müstakil Havuzlu",
+      "Yüzme Havuzu (Açık)", "Yüzme Havuzu (Kapalı)"
+    ],
+    "yuksek_sinyal_teknik": [
+      "Isı Yalıtımı", "Ses Yalıtımı", "Çelik Kapı", "Isıcam", "Fiber İnternet"
+    ]
+  },
+
+  "skor_gruplari": {
+    "_aciklama": "Bu gruplardaki ozellikler 'kac tanesi var?' sayilir, sonra nominal kategoriye binlenir.",
+    "guvenlik": [
+      "Alarm (Hırsız)", "Alarm (Yangın)", "24 Saat Güvenlik",
+      "Görüntülü Diyafon", "Kamera Sistemi", "Intercom Sistemi",
+      "Yüz Tanıma & Parmak İzi", "Yangın Merdiveni"
+    ],
+    "luks": [
+      "Hamam", "Sauna", "Jakuzi", "Buhar Odası",
+      "Ebeveyn Banyosu", "Giyinme Odası", "Hilton Banyo",
+      "Teras", "Araç Şarj İstasyonu", "Yüzme Havuzu"
+    ],
+    "sosyal": [
+      "Çocuk Oyun Parkı", "Kreş", "Spor Alanı", "Spor Salonu",
+      "Tenis Kortu", "Köpek Parkı", "Park", "Park & Yeşil Alan",
+      "Barbekü"
+    ],
+    "ulasim": [
+      "Metro", "Metrobüs", "Marmaray", "Tramvay", "Tren İstasyonu",
+      "Avrasya Tüneli", "Boğaz Köprüleri", "E-5", "TEM",
+      "Cadde", "Anayol", "Otobüs Durağı", "Minibüs", "Dolmuş",
+      "Deniz Otobüsü", "Havaalanı", "İskele",
+      "Denize Sıfır", "Göle Sıfır", "Sahil"
+    ],
+    "cevre_yakinlik": [
+      "Hastane", "Eczane", "Sağlık Ocağı",
+      "Cami", "Cemevi", "Havra", "Kilise",
+      "İlkokul-Ortaokul", "Lise", "Üniversite",
+      "Market", "Alışveriş Merkezi", "Eğlence Merkezi",
+      "Şehir Merkezi", "Belediye", "Polis Merkezi", "İtfaiye",
+      "Semt Pazarı", "Fuar", "Plaj"
+    ],
+    "ic_konfor": [
+      "ADSL", "Ahşap Doğrama", "Alaturka Tuvalet", "Alüminyum Doğrama",
+      "Amerikan Kapı", "Ankastre Fırın", "Beyaz Eşya", "Boyalı",
+      "Bulaşık Makinesi", "Buzdolabı", "Çamaşır Kurutma Makinesi",
+      "Çamaşır Makinesi", "Çamaşır Odası", "Duşakabin", "Duvar Kağıdı",
+      "Fırın", "Gömme Dolap", "Kartonpiyer", "Kiler", "Klima", "Küvet",
+      "Laminat Zemin", "Marley", "Mobilya",
+      "Mutfak (Ankastre)", "Mutfak (Laminat)", "Mutfak Doğalgazı",
+      "Panjur/Jaluzi", "Parke Zemin", "PVC Doğrama", "Seramik Zemin",
+      "Set Üstü Ocak", "Spot Aydınlatma", "Şofben", "Termosifon", "Vestiyer",
+      "Apartman Görevlisi", "Hidrofor", "Jeneratör",
+      "Kablo TV", "Uydu", "Su Deposu", "Siding",
+      "Araç Park Yeri"
+    ],
+    "engelli": [
+      "Engelliye Uygun Asansör", "Engelliye Uygun Banyo",
+      "Engelliye Uygun Mutfak", "Engelliye Uygun Park",
+      "Geniş Koridor", "Giriş / Rampa", "Merdiven",
+      "Oda Kapısı", "Priz / Elektrik Anahtarı",
+      "Tutamak / Korkuluk", "Tuvalet"
+    ]
+  },
+
+  "skor_esikleri": {
+    "_aciklama": "Skor count'unu nominal kategoriye binle. cok dusuk = (0, esik1], dusuk = (esik1, esik2], orta = (esik2, esik3], yuksek > esik3.",
+    "varsayilan": {
+      "esik1": 0.5,
+      "esik2": 2.5,
+      "esik3": 5.5
+    },
+    "engelli": {
+      "esik1": 0.5,
+      "esik2": 1.5,
+      "esik3": 3.5
+    }
+  },
+
+  "metrekare_binleri": [
+    {"max": 50,   "etiket": "0-50 m2"},
+    {"max": 75,   "etiket": "50-75 m2"},
+    {"max": 100,  "etiket": "75-100 m2"},
+    {"max": 125,  "etiket": "100-125 m2"},
+    {"max": 150,  "etiket": "125-150 m2"},
+    {"max": 200,  "etiket": "150-200 m2"},
+    {"max": 300,  "etiket": "200-300 m2"},
+    {"max": null, "etiket": "300 m2 ve ustu"}
+  ],
+
+  "oda_binleri": [
+    {"max": 1.5,  "etiket": "1 oda"},
+    {"max": 2.5,  "etiket": "2 oda"},
+    {"max": 3.5,  "etiket": "3 oda"},
+    {"max": 4.5,  "etiket": "4 oda"},
+    {"max": 5.5,  "etiket": "5 oda"},
+    {"max": 6.5,  "etiket": "6 oda"},
+    {"max": null, "etiket": "7 oda ve ustu"}
+  ],
+
+  "kat_sayisi_binleri": [
+    {"max": 3,    "etiket": "alcak 1_3 kat"},
+    {"max": 7,    "etiket": "orta 4_7 kat"},
+    {"max": 15,   "etiket": "yuksek 8_15 kat"},
+    {"max": null, "etiket": "cok yuksek 16 ustu kat"}
+  ],
+
+  "banyo_binleri": [
+    {"max": 1.5,  "etiket": "1 banyo"},
+    {"max": 2.5,  "etiket": "2 banyo"},
+    {"max": null, "etiket": "3 banyo ve ustu"}
+  ],
+
+  "fiyat_binleri": [
+    {"max": 1500000,   "etiket": "1_5_Milyon_TL_Alti"},
+    {"max": 2000000,   "etiket": "1_5_2_Milyon_TL_Arasi"},
+    {"max": 3000000,   "etiket": "2_3_Milyon_TL_Arasi"},
+    {"max": 4000000,   "etiket": "3_4_Milyon_TL_Arasi"},
+    {"max": 5000000,   "etiket": "4_5_Milyon_TL_Arasi"},
+    {"max": 7500000,   "etiket": "5_7_Bucuk_Milyon_TL_Arasi"},
+    {"max": 10000000,  "etiket": "7_Bucuk_10_Milyon_TL_Arasi"},
+    {"max": null,      "etiket": "10_Milyon_TL_Ustu"}
+  ],
+
+  "fiyat_etiket_turkce": {
+    "_aciklama": "Modelin verdigi etiketin kullaniciya gosterilen Turkcesi.",
+    "1_5_Milyon_TL_Alti": "1.5 Milyon TL altı",
+    "1_5_2_Milyon_TL_Arasi": "1.5 Milyon TL - 2 Milyon TL",
+    "2_3_Milyon_TL_Arasi": "2 Milyon TL - 3 Milyon TL",
+    "3_4_Milyon_TL_Arasi": "3 Milyon TL - 4 Milyon TL",
+    "4_5_Milyon_TL_Arasi": "4 Milyon TL - 5 Milyon TL",
+    "5_7_Bucuk_Milyon_TL_Arasi": "5 Milyon TL - 7.5 Milyon TL",
+    "7_Bucuk_10_Milyon_TL_Arasi": "7.5 Milyon TL - 10 Milyon TL",
+    "10_Milyon_TL_Ustu": "10 Milyon TL ve üzeri"
+  }
+}
