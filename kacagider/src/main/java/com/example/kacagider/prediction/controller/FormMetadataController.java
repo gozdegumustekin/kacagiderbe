@@ -1,7 +1,9 @@
 package com.example.kacagider.prediction.controller;
 
 import com.example.kacagider.prediction.dto.FormMetadataResponse;
+import com.example.kacagider.prediction.metadata.FeaturePipelineConfig;
 import com.example.kacagider.prediction.metadata.PredictionFeatureCatalog;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +12,26 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class FormMetadataController {
 
+    private final PredictionFeatureCatalog catalog;
+    private final FeaturePipelineConfig pipelineConfig;
+
+    @Autowired
+    public FormMetadataController(PredictionFeatureCatalog catalog,
+            FeaturePipelineConfig pipelineConfig) {
+        this.catalog = catalog;
+        this.pipelineConfig = pipelineConfig;
+    }
+
     @GetMapping("/form-data")
     public ResponseEntity<FormMetadataResponse> getFormData() {
         FormMetadataResponse response = new FormMetadataResponse(
                 PredictionFeatureCatalog.TEMEL_ALANLAR,
                 PredictionFeatureCatalog.TEMEL_BINARY_ALANLAR,
-                PredictionFeatureCatalog.YONLER,
-                PredictionFeatureCatalog.SKOR_GRUPLARI,
-                PredictionFeatureCatalog.DIGER_OZELLIK_GRUPLARI);
+                catalog.getYonler(),
+                catalog.getUiGruplari(),
+                catalog.getPipelineRolleri(),
+                catalog.getSecenekListeleri(),
+                pipelineConfig.getVersion());
 
         return ResponseEntity.ok(response);
     }
