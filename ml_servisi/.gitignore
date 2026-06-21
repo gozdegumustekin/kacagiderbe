@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Test/IDE
+.pytest_cache/
+.vscode/
+.idea/
+
+# NOT: model_dosyalari/*.pth DOSYALARI ENGELLENMEMELİ!
+# Railway'in modelleri bulması için .pth'ler repoda olmalı.
+# Bu yüzden burada *.pth YOK.
