@@ -5,6 +5,7 @@ import com.example.kacagider.prediction.dto.PredictionDetailResponse;
 import com.example.kacagider.prediction.dto.PredictionHistoryItemResponse;
 import com.example.kacagider.prediction.dto.PredictionImageResponse;
 import com.example.kacagider.prediction.dto.PredictionRequest;
+import com.example.kacagider.prediction.dto.PredictionResponse;
 import com.example.kacagider.prediction.service.PredictionRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -128,6 +129,27 @@ public class PredictionRecordController {
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     "Fotoğraflar alınırken hata oluştu",
                     e.getMessage()));
+        }
+    }
+
+    /**
+     * Fotolar yüklendikten sonra tahmini kaliteyle günceller.
+     * Frontend, tüm fotolar yüklenince bunu çağırır.
+     */
+    @PostMapping("/{id}/recompute")
+    public ResponseEntity<?> recompute(
+            @PathVariable UUID id,
+            Authentication authentication) {
+        try {
+            UUID userId = UUID.fromString(authentication.getName());
+            PredictionResponse response = predictionRecordService.recompute(userId, id);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of(
+                    "error", "Geçersiz istek", "details", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", "Tahmin güncellenemedi", "details", e.getMessage()));
         }
     }
 

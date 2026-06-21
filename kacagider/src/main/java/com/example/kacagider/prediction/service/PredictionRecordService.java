@@ -19,6 +19,7 @@ import java.util.UUID;
 public class PredictionRecordService {
 
     private final PredictionRecordRepository predictionRecordRepository;
+    private final MlImageService mlImageService;
     private final PredictionImageRepository predictionImageRepository;
     private final PredictionService predictionService;
     private final PredictionInputBuilderService predictionInputBuilderService;
@@ -55,6 +56,45 @@ public class PredictionRecordService {
 
         } catch (Exception e) {
             throw new RuntimeException("Tahmin kaydı oluşturulurken hata oluştu: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Fotolar yüklendikten SONRA çağrılır. O tahmine ait oda kalitelerini
+     * toplar, tahmini kaliteyi feature olarak dahil ederek YENİDEN hesaplar
+     * ve kaydı günceller.
+     *
+     * @param userId       JWT'den (yetki kontrolü)
+     * @param predictionId hangi tahmin güncellenecek
+     * @return güncellenmiş tahmin yanıtı
+     */
+    public PredictionResponse recompute(UUID userId, UUID predictionId) {
+        PredictionRecord record = predictionRecordRepository
+                .findByIdAndUserId(predictionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Kayıt bulunamadı."));
+
+        try {
+            // Orijinal isteği kayıttan geri oku
+            PredictionRequest request = objectMapper.treeToValue(
+                    record.getRequestJson(), PredictionRequest.class);
+
+            // Bu tahmine ait oda kalitelerini topla (ARFF-uyumlu, küçük harf)
+            Map<String, String> kaliteler = mlImageService.arffKaliteFeatureleri(predictionId);
+
+            // Kaliteyle YENİDEN tahmin
+            PredictionResponse yeniTahmin = predictionService.predict(request, kaliteler);
+            Map<String, Object> yeniPreview = predictionInputBuilderService.buildModelInput(request, kaliteler);
+
+            // Kaydı güncelle
+            record.setPredictionJson(objectMapper.valueToTree(yeniTahmin));
+            record.setPreviewJson(objectMapper.valueToTree(yeniPreview));
+            predictionRecordRepository.save(record);
+
+            return yeniTahmin;
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Tahmin kaliteyle güncellenirken hata: " + e.getMessage(), e);
         }
     }
 
