@@ -115,6 +115,18 @@ public class PredictionService {
     }
 
     public PredictionResponse predict(PredictionRequest request) throws Exception {
+        return predict(request, null);
+    }
+
+    /**
+     * Kalite-farkında tahmin. odaKaliteleri null ise normal tahmin
+     * (kalite feature'ları "bilinmiyor").
+     *
+     * @param odaKaliteleri ARFF-uyumlu kalite map'i (salon_kalitesi=iyi gibi),
+     *                      MlImageService.arffKaliteFeatureleri()'nden gelir.
+     */
+    public PredictionResponse predict(PredictionRequest request,
+            Map<String, String> odaKaliteleri) throws Exception {
         if (!modelHazir) {
             throw new IllegalStateException(
                     "Tahmin modeli henüz hazır değil. Model dosyası ve ARFF " +
@@ -122,7 +134,7 @@ public class PredictionService {
                             "Şu an aranıyor: " + modelPath + " / " + arffPath);
         }
 
-        Map<String, Object> processedFeatures = predictionInputBuilderService.buildModelInput(request);
+        Map<String, Object> processedFeatures = predictionInputBuilderService.buildModelInput(request, odaKaliteleri);
 
         Instance newInstance = new DenseInstance(datasetStructure.numAttributes());
         newInstance.setDataset(datasetStructure);

@@ -44,6 +44,22 @@ public class PredictionInputBuilderService {
     }
 
     public Map<String, Object> buildModelInput(PredictionRequest request) {
+        return buildModelInput(request, null);
+    }
+
+    /**
+     * buildModelInput'un kalite-farkında versiyonu.
+     *
+     * @param odaKaliteleri ARFF-uyumlu kalite feature'ları (küçük harf),
+     *                      örn. {"salon_kalitesi":"iyi",
+     *                      "banyo_kalitesi":"normal"}.
+     *                      null ise kalite feature'ları "bilinmiyor"/placeholder
+     *                      kalır.
+     *                      {@link MlImageService#arffKaliteFeatureleri(java.util.UUID)}'den
+     *                      gelir.
+     */
+    public Map<String, Object> buildModelInput(PredictionRequest request,
+            Map<String, String> odaKaliteleri) {
         // Kullanıcının seçtiği TÜM özellikler (Map<String, Boolean>) — ham isim →
         // seçildi mi
         Map<String, Boolean> tumOzellikler = request.ozelliklerOrEmpty();
@@ -88,6 +104,18 @@ public class PredictionInputBuilderService {
             int count = countMatches(seciliHamIsimler, pipelineConfig.getSkorOzellikleri(grupAdi));
             String kategori = pipelineConfig.binSkor(count, grupAdi);
             input.put(grupAdi + "_kategori", kategori);
+        }
+
+        // ── GÖRÜNTÜ KALİTESİ (ResNet'ten, ARFF image feature'ları) ──
+        // ARFF'te: salon_kalitesi, oda_kalitesi, mutfak_kalitesi, banyo_kalitesi
+        // domain = {kotu,normal,iyi,luks}
+        // Foto yoksa veya o oda yüklenmemişse "bilinmiyor" (Weka eksik kabul eder).
+        String[] kaliteAttrlari = {
+                "salon_kalitesi", "oda_kalitesi", "mutfak_kalitesi", "banyo_kalitesi"
+        };
+        for (String attr : kaliteAttrlari) {
+            String deger = (odaKaliteleri != null) ? odaKaliteleri.get(attr) : null;
+            input.put(attr, (deger != null && !deger.isBlank()) ? deger : UNKNOWN);
         }
 
         return input;

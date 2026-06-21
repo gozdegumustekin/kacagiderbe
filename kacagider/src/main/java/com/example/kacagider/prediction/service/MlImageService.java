@@ -18,7 +18,8 @@ import java.util.UUID;
  * sonuçlarını işler. Normal kullanıcı upload'ından (attachImages) ayrıdır:
  * burada fotoğraf zaten 4 aşamadan geçmiş ve kalite belirlenmiştir.
  *
- * <p>Oda başına birden çok fotoğraf olabilir; tabular tahmin için
+ * <p>
+ * Oda başına birden çok fotoğraf olabilir; tabular tahmin için
  * {@link #odaKaliteOrtalamalari(UUID)} ile oda tipine göre kalite ortalaması
  * hesaplanır.
  */
@@ -53,8 +54,7 @@ public class MlImageService {
                 .findByIdAndUserId(predictionId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Kayıt bulunamadı."));
 
-        FileStorageService.StoredFileInfo stored =
-                fileStorageService.storePredictionImage(predictionId, file);
+        FileStorageService.StoredFileInfo stored = fileStorageService.storePredictionImage(predictionId, file);
 
         long mevcut = predictionImageRepository.countByPredictionRecord_Id(predictionId);
 
@@ -67,9 +67,9 @@ public class MlImageService {
                 .sizeBytes(stored.sizeBytes())
                 .sortOrder((int) mevcut)
                 .odaTipi(odaTipi)
-                .resnetStatus("DONE")          // ML servisi zaten işledi
+                .resnetStatus("DONE") // ML servisi zaten işledi
                 .resnetLabel(kaliteEtiket)
-                .resnetScore(kaliteGuven)      // güveni score olarak tut
+                .resnetScore(kaliteGuven) // güveni score olarak tut
                 .build();
 
         return predictionImageRepository.save(image);
@@ -79,8 +79,9 @@ public class MlImageService {
      * Bir tahmin kaydındaki tüm fotoğrafları oda tipine göre gruplayıp
      * her oda için kalite ortalamasını döndürür.
      *
-     * <p>Tabular tahminde feature olarak kullanılır:
-     *   salon_kalitesi, oda_kalitesi, mutfak_kalitesi, banyo_kalitesi
+     * <p>
+     * Tabular tahminde feature olarak kullanılır:
+     * salon_kalitesi, oda_kalitesi, mutfak_kalitesi, banyo_kalitesi
      *
      * @return {"salon": "Iyi", "banyo": "Normal", ...} (sadece foto olan odalar)
      */
@@ -92,11 +93,13 @@ public class MlImageService {
         Map<String, double[]> birikim = new LinkedHashMap<>(); // [toplam, adet]
 
         for (PredictionImage img : hepsi) {
-            if (img.getOdaTipi() == null || img.getResnetLabel() == null) continue;
+            if (img.getOdaTipi() == null || img.getResnetLabel() == null)
+                continue;
             Double ord = KALITE_ORDINAL.get(img.getResnetLabel());
-            if (ord == null) continue;
+            if (ord == null)
+                continue;
 
-            birikim.computeIfAbsent(img.getOdaTipi(), k -> new double[]{0.0, 0.0});
+            birikim.computeIfAbsent(img.getOdaTipi(), k -> new double[] { 0.0, 0.0 });
             double[] acc = birikim.get(img.getOdaTipi());
             acc[0] += ord;
             acc[1] += 1;
@@ -118,5 +121,28 @@ public class MlImageService {
             case 2 -> "Iyi";
             default -> "Normal";
         };
+    }
+
+    /**
+     * Tabular tahmin (ARFF) için oda kaliteleri — KÜÇÜK HARF değerlerle.
+     *
+     * <p>
+     * ARFF'teki image feature attribute'ları {kotu,normal,iyi,luks} domain'ini
+     * kullanır (küçük harf). ML servisi "Iyi/Normal/Kotu" (büyük harf) döndürür,
+     * bu metod onları ARFF'e uygun küçük harfe çevirir.
+     *
+     * @return {"salon_kalitesi": "iyi", "mutfak_kalitesi": "normal", ...}
+     *         Sadece foto yüklenmiş odalar döner. ARFF attribute adlarıyla
+     *         (oda + "_kalitesi") anahtarlanır.
+     */
+    public Map<String, String> arffKaliteFeatureleri(UUID predictionId) {
+        Map<String, String> ortalamalar = odaKaliteOrtalamalari(predictionId);
+        Map<String, String> arff = new LinkedHashMap<>();
+        for (var e : ortalamalar.entrySet()) {
+            String odaTipi = e.getKey(); // salon / mutfak / banyo
+            String etiketKucuk = e.getValue().toLowerCase(); // Iyi → iyi
+            arff.put(odaTipi + "_kalitesi", etiketKucuk); // salon_kalitesi = iyi
+        }
+        return arff;
     }
 }
