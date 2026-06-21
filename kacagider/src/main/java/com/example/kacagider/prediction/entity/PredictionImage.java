@@ -32,6 +32,8 @@ public class PredictionImage {
     @Column(nullable = false)
     private String originalFilename;
 
+    private String odaTipi;
+
     private String contentType;
 
     @Column(nullable = false)
