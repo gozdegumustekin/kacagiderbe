@@ -2,14 +2,26 @@
   "_aciklama": [
     "Bu dosya Kaca Gider feature pipeline'inin tek dogruluk kaynagidir.",
     "Hem csv_to_arff_hepsi.py hem de Spring Boot backend bu config'i okur.",
-    "Burada degistirdigin her sey hem yeniden ARFF uretimini hem de backend'in",
-    "modele gonderdigi veriyi etkiler. Frontend ve scraper bundan ETKILENMEZ;",
-    "onlar her zaman tum 155 ozelligi taşır.",
     "",
-    "version'u her degistirdiginde +1 yap. Backend bunu loglarla yazdirir.",
-    ""
+    "V2 NOTU: v3 analizi TIER 1'e 8 ozellik onerdi, ancak bunlarin cogu",
+    "yuksek MI'sini yuksek varlik oraninda (%30-50) gostermesinden aliyordu",
+    "— gercek 'guclu sinyalli' degil 'cok yaygin' demek. Sadece Ebeveyn",
+    "Banyosu (MI=0.0659, %21 varlik) net bir TIER 1 adayi; bireysele",
+    "tasindi. Digerleri (Vestiyer, Hilton Banyo, Mutfak Ankastre, Dusakabin,",
+    "Seramik Zemin, Gomme Dolap, Giyinme Odasi) skor grubunda kaliyor.",
+    "",
+    "Promosyon kurali: bir ozellik bireysele yukseltilirken hem MI ≥ 0.04",
+    "hem de varlik orani %5-%40 araliginda olmali. Buyuk sehir verisi",
+    "geldiginde v3'u tekrar calistir, yeni adaylari bu kurala gore degerlendir."
   ],
-  "version": 1,
+  "version": 2,
+
+  "sege": {
+    "_aciklama": "Il SEGE kademesi runtime lookup ile eklenir; CSV'de yoktur.",
+    "aktif": true,
+    "kolon_adi": "sege_kademe",
+    "lookup_dosyasi": "sege_kademe.json"
+  },
 
   "bireysel_ozellikler": {
     "_aciklama": "Bu ozellikler skora katilmaz; her biri ayri binary feature olarak modele gider.",
@@ -18,11 +30,19 @@
     "konut_tipi_detaylari": ["Dubleks", "Tripleks", "Çatı Dubleksi", "Bahçe Dubleksi"],
     "yuksek_sinyal_luks": [
       "Akıllı Ev", "Şömine", "Müstakil Havuzlu",
-      "Yüzme Havuzu (Açık)", "Yüzme Havuzu (Kapalı)"
+      "Yüzme Havuzu (Açık)", "Yüzme Havuzu (Kapalı)",
+      "Ebeveyn Banyosu"
     ],
     "yuksek_sinyal_teknik": [
       "Isı Yalıtımı", "Ses Yalıtımı", "Çelik Kapı", "Isıcam", "Fiber İnternet"
     ]
+  },
+
+  "auto_promoted_individuals": {
+    "_aciklama": "v3 analizinin TIER 1 önerileri. Manuel inceleyip uygun bulduklarinizi yukaridaki bireysel_ozellikler altina tasiyin.",
+    "_son_analiz_tarihi": null,
+    "_son_analiz_satir_sayisi": 0,
+    "oneriler": []
   },
 
   "skor_gruplari": {
@@ -34,7 +54,7 @@
     ],
     "luks": [
       "Hamam", "Sauna", "Jakuzi", "Buhar Odası",
-      "Ebeveyn Banyosu", "Giyinme Odası", "Hilton Banyo",
+      "Giyinme Odası", "Hilton Banyo",
       "Teras", "Araç Şarj İstasyonu", "Yüzme Havuzu"
     ],
     "sosyal": [
