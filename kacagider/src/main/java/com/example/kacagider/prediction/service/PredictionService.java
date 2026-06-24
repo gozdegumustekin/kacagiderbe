@@ -3,6 +3,8 @@ package com.example.kacagider.prediction.service;
 import com.example.kacagider.prediction.dto.PredictionRequest;
 import com.example.kacagider.prediction.dto.PredictionResponse;
 import com.example.kacagider.prediction.metadata.FeaturePipelineConfig;
+import com.example.kacagider.prediction.metadata.ModelStrategyConfig;
+import com.example.kacagider.prediction.metadata.ModelStrategyConfig.GrupBilgi;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,189 +27,206 @@ import java.util.Set;
 @Service
 public class PredictionService {
 
-    private final PredictionInputBuilderService predictionInputBuilderService;
+    private final PredictionInputBuilderService inputBuilder;
     private final FeaturePipelineConfig pipelineConfig;
+    private final ModelStrategyConfig strategyConfig;
 
-    /**
-     * application.properties'teki model.enabled flag'i.
-     * false → model yüklenmeye çalışılmaz, predict çağrıları
-     * "model henüz hazır değil" hatası verir; uygulama yine ayağa kalkar.
-     */
     @Value("${model.enabled:true}")
     private boolean modelEnabled;
 
-    /**
-     * application.properties'teki model.arff.path — varsayılan
-     * train_emlak_hepsi.arff.
-     * Eski model'i denemek istersen "train_emlak.arff" yapabilirsin.
-     */
-    @Value("${model.arff.path:train_emlak_hepsi.arff}")
-    private String arffPath;
-
-    @Value("${model.file.path:emlak_rf_modeli.model}")
-    private String modelPath;
-
-    private Classifier wekaModel;
-    private Instances datasetStructure;
-    private boolean modelHazir = false;
+    /** Yüklenen modeller: "strateji/grup" -> YukluModel */
+    private final Map<String, YukluModel> modeller = new LinkedHashMap<>();
 
     @Autowired
-    public PredictionService(PredictionInputBuilderService predictionInputBuilderService,
-            FeaturePipelineConfig pipelineConfig) {
-        this.predictionInputBuilderService = predictionInputBuilderService;
+    public PredictionService(PredictionInputBuilderService inputBuilder,
+            FeaturePipelineConfig pipelineConfig,
+            ModelStrategyConfig strategyConfig) {
+        this.inputBuilder = inputBuilder;
         this.pipelineConfig = pipelineConfig;
+        this.strategyConfig = strategyConfig;
     }
 
     @PostConstruct
-    public void loadModel() {
+    public void loadModels() {
         if (!modelEnabled) {
-            System.out.println("ℹ️  model.enabled=false → Weka modeli YÜKLENMEDİ. " +
-                    "predict çağrıları reddedilecek; diğer endpoint'ler çalışır.");
+            System.out.println("ℹ️  model.enabled=false → modeller YÜKLENMEDİ.");
             return;
         }
 
-        try {
-            // ARFF (şema) ve .model dosyaları classpath'te (resources/ altında) olmalı
-            ClassPathResource modelResource = new ClassPathResource(modelPath);
-            ClassPathResource arffResource = new ClassPathResource(arffPath);
+        int basarili = 0, eksik = 0;
+        for (String strateji : strategyConfig.tumStratejiler()) {
+            for (GrupBilgi g : strategyConfig.gruplar(strateji).values()) {
+                String anahtar = strateji + "/" + g.grupAdi();
+                try {
+                    // Config'teki model adına ".zip" ekleyerek ara (model_tek.model ->
+                    // model_tek.model.zip)
+                    String zipAdi = g.modelDosyasi() + ".zip";
+                    ClassPathResource modelRes = new ClassPathResource(zipAdi);
+                    ClassPathResource arffRes = new ClassPathResource(g.arffDosyasi());
 
-            if (!modelResource.exists()) {
-                System.err.println("⚠️  Model dosyası bulunamadı: " + modelPath +
-                        " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
-                return;
-            }
-            if (!arffResource.exists()) {
-                System.err.println("⚠️  ARFF dosyası bulunamadı: " + arffPath +
-                        " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
-                return;
-            }
+                    if (!modelRes.exists() || !arffRes.exists()) {
+                        System.out.println("  ⏭️  " + anahtar + " — model/arff yok ("
+                                + zipAdi + " / " + g.arffDosyasi() + "), atlanıyor.");
+                        eksik++;
+                        continue;
+                    }
 
-            try (InputStream rawStream = modelResource.getInputStream();
-                    java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(rawStream)) {
-                java.util.zip.ZipEntry entry = zis.getNextEntry();
-                if (entry == null) {
-                    throw new IllegalStateException("Model zip'i boş: " + modelPath);
+                    Classifier clf;
+                    try (InputStream rawStream = modelRes.getInputStream();
+                            java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(rawStream)) {
+                        java.util.zip.ZipEntry entry = zis.getNextEntry();
+                        if (entry == null) {
+                            throw new IllegalStateException("Model zip'i boş: " + zipAdi);
+                        }
+                        clf = (Classifier) weka.core.SerializationHelper.read(zis);
+                    }
+
+                    Instances structure;
+                    try (InputStream as = arffRes.getInputStream();
+                            BufferedReader br = new BufferedReader(new InputStreamReader(as))) {
+                        structure = new Instances(br);
+                    }
+                    structure.setClassIndex(structure.numAttributes() - 1);
+
+                    modeller.put(anahtar, new YukluModel(clf, structure));
+                    basarili++;
+                    System.out.println("  ✅ " + anahtar + " yüklendi ("
+                            + structure.numAttributes() + " attr).");
+
+                } catch (Exception e) {
+                    System.out.println("  ⚠️  " + anahtar + " yüklenemedi: " + e.getMessage());
+                    eksik++;
                 }
-                wekaModel = (Classifier) weka.core.SerializationHelper.read(zis);
-                System.out.println("✅ Model zip'ten açıldı: " + entry.getName());
             }
-
-            try (InputStream schemaStream = arffResource.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(schemaStream))) {
-                datasetStructure = new Instances(reader);
-            }
-
-            datasetStructure.setClassIndex(datasetStructure.numAttributes() - 1);
-            modelHazir = true;
-
-            System.out.println("✅ Weka modeli ve " + arffPath + " başarıyla yüklendi.");
-            System.out.println("   Class attribute: " + datasetStructure.classAttribute().name());
-            System.out.println("   Toplam attribute: " + datasetStructure.numAttributes());
-            System.out.println("   Pipeline config v" + pipelineConfig.getVersion());
-
-        } catch (Exception e) {
-            System.err.println("⚠️  Model veya ARFF yüklenirken hata: " + e.getMessage() +
-                    " — predict endpoint'i devre dışı, diğer endpoint'ler çalışır.");
-            modelHazir = false;
         }
+        System.out.println("📦 Model yükleme bitti: " + basarili + " yüklendi, "
+                + eksik + " eksik/atlandı. Aktif strateji: "
+                + strategyConfig.getAktifStrateji());
     }
 
-    /**
-     * predict endpoint'inin kullanılabilir olup olmadığı — health check'te de
-     * gösterilebilir.
-     */
+    public boolean stratejiHazirMi(String strateji) {
+        String s = (strateji == null || strateji.isBlank())
+                ? strategyConfig.getAktifStrateji()
+                : strateji;
+        return modeller.keySet().stream().anyMatch(k -> k.startsWith(s + "/"));
+    }
+
     public boolean isModelHazir() {
-        return modelHazir;
+        return !modeller.isEmpty();
     }
 
+    public String getAktifStrateji() {
+        return strategyConfig.getAktifStrateji();
+    }
+
+    /** Geriye dönük: aktif strateji, kalite yok. */
     public PredictionResponse predict(PredictionRequest request) throws Exception {
-        return predict(request, null);
+        return predict(request, null, null);
     }
 
-    /**
-     * Kalite-farkında tahmin. odaKaliteleri null ise normal tahmin
-     * (kalite feature'ları "bilinmiyor").
-     *
-     * @param odaKaliteleri ARFF-uyumlu kalite map'i (salon_kalitesi=iyi gibi),
-     *                      MlImageService.arffKaliteFeatureleri()'nden gelir.
-     */
+    /** Kalite-farkında, aktif strateji (MlImageService bunu çağırır). */
     public PredictionResponse predict(PredictionRequest request,
             Map<String, String> odaKaliteleri) throws Exception {
-        if (!modelHazir) {
+        return predict(request, odaKaliteleri, null);
+    }
+
+    /**
+     * Tam imza: kalite enjeksiyonu + strateji seçimi.
+     * strateji null/boş ise aktif strateji kullanılır.
+     */
+    public PredictionResponse predict(PredictionRequest request,
+            Map<String, String> odaKaliteleri,
+            String strateji) throws Exception {
+
+        if (!modelEnabled || modeller.isEmpty()) {
             throw new IllegalStateException(
-                    "Tahmin modeli henüz hazır değil. Model dosyası ve ARFF " +
-                            "src/main/resources/ altında olmalı. " +
-                            "Şu an aranıyor: " + modelPath + " / " + arffPath);
+                    "Tahmin modeli hazır değil. model.enabled ve resources/ altındaki "
+                            + ".model.zip/.arff dosyalarını kontrol et.");
         }
 
-        Map<String, Object> processedFeatures = predictionInputBuilderService.buildModelInput(request, odaKaliteleri);
+        String s = (strateji == null || strateji.isBlank())
+                ? strategyConfig.getAktifStrateji()
+                : strateji;
 
-        Instance newInstance = new DenseInstance(datasetStructure.numAttributes());
-        newInstance.setDataset(datasetStructure);
-
-        for (int i = 0; i < datasetStructure.numAttributes(); i++) {
-            newInstance.setMissing(i);
+        if (!strategyConfig.stratejiVarMi(s)) {
+            throw new IllegalArgumentException("Bilinmeyen strateji: '" + s
+                    + "'. Mevcut: " + strategyConfig.tumStratejiler());
         }
 
-        for (int i = 0; i < datasetStructure.numAttributes(); i++) {
-            Attribute attr = datasetStructure.attribute(i);
-            if (attr.index() == datasetStructure.classIndex())
-                continue;
+        GrupBilgi grup = strategyConfig.ilIcinGrup(request.il(), s);
+        if (grup == null) {
+            throw new IllegalArgumentException(
+                    "'" + request.il() + "' ili için '" + s
+                            + "' stratejisinde grup bulunamadı (SEGE'de yok olabilir).");
+        }
 
-            String columnName = attr.name();
-            if (!processedFeatures.containsKey(columnName))
-                continue;
+        String anahtar = s + "/" + grup.grupAdi();
+        YukluModel ym = modeller.get(anahtar);
+        if (ym == null) {
+            throw new IllegalStateException("Model yüklü değil: " + anahtar
+                    + " (" + grup.modelDosyasi() + "). Weka'da eğitip resources/'a koy.");
+        }
 
-            Object value = processedFeatures.get(columnName);
+        // Input map (kalite dahil)
+        Map<String, Object> features = inputBuilder.buildModelInput(request, odaKaliteleri);
+
+        Instance inst = new DenseInstance(ym.structure.numAttributes());
+        inst.setDataset(ym.structure);
+        for (int i = 0; i < ym.structure.numAttributes(); i++) {
+            inst.setMissing(i);
+        }
+        for (int i = 0; i < ym.structure.numAttributes(); i++) {
+            Attribute attr = ym.structure.attribute(i);
+            if (attr.index() == ym.structure.classIndex())
+                continue;
+            String col = attr.name();
+            if (!features.containsKey(col))
+                continue;
+            Object value = features.get(col);
+            if (value == null)
+                continue;
             try {
-                if (value == null)
-                    continue;
-
                 if (attr.isNumeric()) {
-                    newInstance.setValue(attr, Double.parseDouble(value.toString()));
+                    inst.setValue(attr, Double.parseDouble(value.toString()));
                 } else if (attr.isNominal()) {
-                    String nominalValue = value.toString();
-                    if (attr.indexOfValue(nominalValue) >= 0) {
-                        newInstance.setValue(attr, nominalValue);
-                    } else if (attr.indexOfValue("bilinmiyor") >= 0) {
-                        newInstance.setValue(attr, "bilinmiyor");
-                    } else if (attr.indexOfValue("yok") >= 0) {
-                        newInstance.setValue(attr, "yok");
-                    }
+                    String nv = value.toString();
+                    if (attr.indexOfValue(nv) >= 0)
+                        inst.setValue(attr, nv);
+                    else if (attr.indexOfValue("bilinmiyor") >= 0)
+                        inst.setValue(attr, "bilinmiyor");
+                    else if (attr.indexOfValue("yok") >= 0)
+                        inst.setValue(attr, "yok");
                 } else if (attr.isString()) {
-                    newInstance.setValue(attr, value.toString());
+                    inst.setValue(attr, value.toString());
                 }
             } catch (Exception ignored) {
             }
         }
 
-        double predictionIndex = wekaModel.classifyInstance(newInstance);
-        Attribute classAttr = datasetStructure.classAttribute();
+        double idx = ym.classifier.classifyInstance(inst);
+        Attribute classAttr = ym.structure.classAttribute();
         String predictedLabel = classAttr.isNominal()
-                ? classAttr.value((int) predictionIndex)
-                : String.valueOf(predictionIndex);
-
+                ? classAttr.value((int) idx)
+                : String.valueOf(idx);
         String displayText = formatPriceLabel(predictedLabel);
 
-        Set<String> seciliHamIsimler = onlySelectedHamIsimler(request);
+        Set<String> secili = onlySelected(request);
         Map<String, Integer> skorCounts = new LinkedHashMap<>();
         for (String grupAdi : pipelineConfig.getSkorGruplari().keySet()) {
-            int count = 0;
-            for (String ozellik : pipelineConfig.getSkorOzellikleri(grupAdi)) {
-                if (seciliHamIsimler.contains(ozellik))
-                    count++;
+            int c = 0;
+            for (String oz : pipelineConfig.getSkorOzellikleri(grupAdi)) {
+                if (secili.contains(oz))
+                    c++;
             }
-            skorCounts.put(grupAdi, count);
+            skorCounts.put(grupAdi, c);
         }
 
         return new PredictionResponse(
-                predictedLabel,
-                displayText,
-                skorCounts,
-                "Tahmini fiyat aralığı başarıyla hesaplandı.");
+                predictedLabel, displayText, skorCounts,
+                "Tahmin '" + s + "' stratejisi, '" + grup.grupAdi() + "' modeliyle yapıldı.");
     }
 
-    private Set<String> onlySelectedHamIsimler(PredictionRequest request) {
+    private Set<String> onlySelected(PredictionRequest request) {
         Map<String, Boolean> map = request.ozelliklerOrEmpty();
         Set<String> out = new LinkedHashSet<>();
         for (var e : map.entrySet()) {
@@ -221,7 +240,17 @@ public class PredictionService {
     private String formatPriceLabel(String label) {
         if (label == null || label.isBlank())
             return "Bilinmiyor";
-        Map<String, String> sozluk = pipelineConfig.getFiyatEtiketTurkce();
-        return sozluk.getOrDefault(label, label.replace("_", " "));
+        return pipelineConfig.getFiyatEtiketTurkce()
+                .getOrDefault(label, label.replace("_", " "));
+    }
+
+    private static class YukluModel {
+        final Classifier classifier;
+        final Instances structure;
+
+        YukluModel(Classifier classifier, Instances structure) {
+            this.classifier = classifier;
+            this.structure = structure;
+        }
     }
 }

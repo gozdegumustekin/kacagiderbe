@@ -23,6 +23,41 @@
     "lookup_dosyasi": "sege_kademe.json"
   },
 
+  "model_stratejisi": {
+    "_aciklama": "Aktif strateji: 'tek' | 'kume3' | 'kademe6'. Backend bunu default alır, istekle override edilebilir.",
+    "aktif": "kume3",
+
+    "stratejiler": {
+      "tek": {
+        "_aciklama": "Tüm iller tek modelde. SEGE sadece feature olarak girer.",
+        "model_dosyalari": {
+          "hepsi": { "arff": "train_tek.arff", "model": "model_tek.model" }
+        }
+      },
+
+      "kume3": {
+        "_aciklama": "SEGE kademeleri 3 gelişmişlik grubuna toplanır, 3 ayrı model.",
+        "gruplar": {
+          "gelismis":   { "kademeler": [1, 2], "arff": "train_gelismis.arff",   "model": "model_gelismis.model" },
+          "orta":       { "kademeler": [3, 4], "arff": "train_orta.arff",       "model": "model_orta.model" },
+          "gelismekte": { "kademeler": [5, 6], "arff": "train_gelismekte.arff", "model": "model_gelismekte.model" }
+        }
+      },
+
+      "kademe6": {
+        "_aciklama": "Her SEGE kademesi için ayrı model. Kademe 4,5,6 veri az; rapora not düşülür.",
+        "gruplar": {
+          "kademe1": { "kademeler": [1], "arff": "train_kademe1.arff", "model": "model_kademe1.model" },
+          "kademe2": { "kademeler": [2], "arff": "train_kademe2.arff", "model": "model_kademe2.model" },
+          "kademe3": { "kademeler": [3], "arff": "train_kademe3.arff", "model": "model_kademe3.model" },
+          "kademe4": { "kademeler": [4], "arff": "train_kademe4.arff", "model": "model_kademe4.model" },
+          "kademe5": { "kademeler": [5], "arff": "train_kademe5.arff", "model": "model_kademe5.model" },
+          "kademe6": { "kademeler": [6], "arff": "train_kademe6.arff", "model": "model_kademe6.model" }
+        }
+      }
+    }
+  },
+
   "bireysel_ozellikler": {
     "_aciklama": "Bu ozellikler skora katilmaz; her biri ayri binary feature olarak modele gider.",
     "yon": ["Batı", "Doğu", "Güney", "Kuzey"],
