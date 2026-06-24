@@ -82,8 +82,14 @@ public class PredictionService {
                 return;
             }
 
-            try (InputStream modelStream = modelResource.getInputStream()) {
-                wekaModel = (Classifier) weka.core.SerializationHelper.read(modelStream);
+            try (InputStream rawStream = modelResource.getInputStream();
+                    java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(rawStream)) {
+                java.util.zip.ZipEntry entry = zis.getNextEntry();
+                if (entry == null) {
+                    throw new IllegalStateException("Model zip'i boş: " + modelPath);
+                }
+                wekaModel = (Classifier) weka.core.SerializationHelper.read(zis);
+                System.out.println("✅ Model zip'ten açıldı: " + entry.getName());
             }
 
             try (InputStream schemaStream = arffResource.getInputStream();

@@ -60,7 +60,7 @@ MODEL_TANIMLARI: Dict[str, dict] = {
         # 'belirsiz' sınıfı = "bu bir oda değil" demek. Eğitimdeki klasör adın
         # neyse ("belirsiz" / "diger" / "notroom") onu BURAYA yaz ve aşağıdaki
         # BELIRSIZ_ETIKET sabitini de aynı yap.
-        "classes": ["Bathroom_Toilet","Kitchen","Not_Room_Other","Saloon_Bedroom"],
+        "classes": ["Bathroom_Toilet", "Kitchen", "Not_Room_Other", "Saloon_Bedroom"],
     },
     "kalite_salon": {
         "dosya": "resnet18_kalite_salon.pth",
