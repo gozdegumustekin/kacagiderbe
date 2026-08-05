@@ -325,4 +325,332 @@ export BREVO_API_KEY="xkeysib-..."
 
 Backend bu adımların ardından çalışır durumda olur. Görüntü doğrulama ve görsel
 kalite analizi için ayrı **ML servisinin** (FastAPI) de çalışıyor olması gerekir;
-onun kurulumu kendi kılavuzunda anlatılmaktadır.
+
+
+# Kaça Gider — ML Servisi (Fotoğraf Doğrulama) Kurulum Kılavuzu
+
+Bu doküman, **Kaça Gider** projesinin görüntü doğrulama ve görsel kalite analizinden
+sorumlu **ML servisinin** (FastAPI + PyTorch) yerel geliştirme ortamında ve üretim
+(Railway) ortamında nasıl kurulup çalıştırılacağını anlatır.
+
+Servis; kullanıcının yüklediği her fotoğrafı üç aşamalı bir doğrulama hattından
+geçirir (iç/dış mekân → oda kategorisi → oda kalitesi), geçerli bulunan görselleri
+kalite skoruyla birlikte Java backend'e iletir. Modeller, ImageNet üzerinde önceden
+eğitilmiş ve transfer öğrenmeyle uyarlanmış beş adet **ResNet18** ağıdır.
+
+---
+
+## 1. Gereksinimler
+
+| Araç | Sürüm | Not |
+|------|-------|-----|
+| Python | **3.11** | Servis Python 3.11 ile geliştirilmiş ve test edilmiştir (Dockerfile `python:3.11-slim` kullanır). |
+| pip | güncel | Bağımlılık kurulumu için. |
+| Docker | (opsiyonel) | Üretim derlemesi ve izole çalıştırma için. Yerelde zorunlu değildir. |
+
+> **Donanım notu:** Servis CPU üzerinde çalışacak şekilde tasarlanmıştır
+> (Railway'de GPU yoktur). GPU varsa otomatik kullanılır, ancak gerekli değildir.
+
+Python sürümünü doğrulayın:
+
+```bash
+python --version
+```
+
+`3.11.x` görmelisiniz.
+
+---
+
+## 2. Proje Yapısı
+
+```
+ml_servisi/
+├── Dockerfile
+├── railway.json
+├── requirements.txt
+├── app/
+│   ├── main.py              # FastAPI uygulaması, endpoint'ler
+│   └── core/
+│       ├── models.py        # ResNet18 modellerini yükler, tahmin sunar
+│       ├── pipeline.py      # 3 aşamalı doğrulama hattı
+│       └── java_client.py   # Doğrulanmış fotoğrafı backend'e iletir
+└── model_dosyalari/         # Eğitilmiş .pth ağırlıkları (5 model)
+    ├── resnet18_inside_outside.pth
+    ├── resnet18_oda_kategorileri.pth
+    ├── resnet18_kalite_salon.pth
+    ├── resnet18_kalite_mutfak.pth
+    └── resnet18_kalite_banyo.pth
+```
+
+> **Model dosyaları:** Servisin çalışması için `model_dosyalari/` klasöründeki beş
+> `.pth` dosyasının mevcut olması gerekir. Bunlar büyük dosyalardır (her biri ~43 MB).
+> Eksik bir model olursa servis yine açılır ama ilgili aşama atlanır; sağlık kontrolü
+> (`/health`) hangi modellerin yüklendiğini gösterir.
+
+---
+
+## 3. Yerel Kurulum
+
+### 3.1. Sanal Ortam Oluşturma
+
+Bağımlılıkları sistemden izole etmek için bir sanal ortam (venv) önerilir:
+
+**Linux/macOS:**
+
+```bash
+cd ml_servisi
+python -m venv venv
+source venv/bin/activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+cd ml_servisi
+python -m venv venv
+venv\Scripts\Activate.ps1
+```
+
+### 3.2. Bağımlılıkları Kurma
+
+> **ÖNEMLİ — kurulum sırası:** PyTorch'un NumPy 2.x çekmesini önlemek için **önce
+> `numpy<2` sabitlenmeli**, sonra CPU sürümü torch kurulmalı, en son kalan
+> bağımlılıklar gelmelidir. Aşağıdaki sıra Dockerfile ile aynıdır.
+
+```bash
+# 1) Önce numpy 1.x'i sabitle (torch'tan ÖNCE)
+pip install "numpy<2"
+
+# 2) CPU-only PyTorch
+pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cpu
+
+# 3) Kalan bağımlılıklar (FastAPI, uvicorn, pillow, httpx, ...)
+pip install -r requirements.txt
+```
+
+Kurulum sonrası NumPy sürümünü doğrulamak iyi olur:
+
+```bash
+python -c "import numpy; print(numpy.__version__)"
+```
+
+Çıktı `1.` ile başlamalıdır. `2.x` görürseniz torch ağırlık dosyalarını yüklerken
+uyumsuzluk yaşanabilir; bu durumda `pip install "numpy<2"` komutunu tekrar çalıştırın.
+
+### 3.3. requirements.txt İçeriği
+
+```
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+numpy<2
+torch==2.2.2
+torchvision==0.17.2
+pillow==10.4.0
+httpx==0.27.2
+python-multipart==0.0.9
+```
+
+---
+
+## 4. Yapılandırma (Ortam Değişkenleri)
+
+Servisin tüm dış yapılandırması ortam değişkenleriyle yapılır. Hepsinin makul
+varsayılanları vardır; yereldeyken hiçbirini tanımlamadan da çalışır.
+
+| Değişken | Varsayılan | Açıklama |
+|----------|-----------|----------|
+| `PORT` | `8000` | Servisin dinleyeceği port. |
+| `JAVA_BASE_URL` | `http://localhost:8080` | Doğrulanmış fotoğrafların gönderileceği Java backend'in taban adresi. |
+| `JAVA_TIMEOUT` | `30` | Backend'e yapılan isteğin zaman aşımı (saniye). |
+
+**JAVA_BASE_URL**, ML servisinin geçerli bir fotoğrafı backend'e iletirken kullandığı
+adrestir. Backend yerelde 8080 portunda çalışıyorsa varsayılan değer yeterlidir.
+Üretimde, backend'in genel (public) ya da Railway iç (internal) adresi verilmelidir.
+
+**Tanımlama örneği (Linux/macOS):**
+
+```bash
+export JAVA_BASE_URL="http://localhost:8080"
+```
+
+**Windows (PowerShell):**
+
+```powershell
+$env:JAVA_BASE_URL="http://localhost:8080"
+```
+
+---
+
+## 5. Çalıştırma
+
+Sanal ortam etkinken, servisi `uvicorn` ile başlatın:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Geliştirme sırasında kod değiştikçe otomatik yenilenmesi için `--reload`
+ekleyebilirsiniz:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Başarılı başlangıç
+
+Açılışta modellerin yüklendiğini bildiren loglar görürsünüz:
+
+```
+📦 Modeller yükleniyor (device=cpu)...
+  ✅ inside_outside yüklendi (2 sınıf).
+  ✅ oda_kategorileri yüklendi (4 sınıf).
+  ✅ kalite_salon yüklendi (3 sınıf).
+  ✅ kalite_mutfak yüklendi (3 sınıf).
+  ✅ kalite_banyo yüklendi (3 sınıf).
+📦 Toplam 5 model yüklü.
+```
+
+---
+
+## 6. Doğrulama ve Endpoint'ler
+
+Servis açıldıktan sonra durumu kontrol edin:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Beklenen yanıt, yüklü modellerin listesini içerir:
+
+```json
+{
+  "status": "UP",
+  "service": "kacagider-ml",
+  "yuklu_modeller": ["inside_outside", "oda_kategorileri", "kalite_salon", "kalite_mutfak", "kalite_banyo"],
+  "model_sayisi": 5
+}
+```
+
+### Başlıca uç noktalar
+
+| Yöntem | Yol | Açıklama |
+|--------|-----|----------|
+| GET | `/` | Basit "servis ayakta" yanıtı |
+| GET | `/health` | Servis ve model durumu |
+| WS  | `/ws/foto-dogrula` | WebSocket — fotoğrafı aşama aşama doğrular, anlık bildirim verir |
+| POST | `/rest/foto-dogrula` | REST yedeği — tüm aşamalar çalışır, tek JSON döner |
+
+**WebSocket akışı (`/ws/foto-dogrula`):** İstemci önce JSON bir metadata mesajı
+(`prediction_id`, `jwt`, `beklenen_tip`, `dosya_adi`, `content_type`) gönderir,
+ardından fotoğraf baytlarını ikili (binary) çerçeve olarak iletir. Servis her
+doğrulama aşamasını anlık olarak bildirir; fotoğraf geçerliyse kalite skoruyla
+birlikte backend'e iletir.
+
+**REST yedeği (`/rest/foto-dogrula`):** WebSocket kullanmak istemeyen istemciler
+için `multipart/form-data` ile `image`, `beklenen_tip`, `prediction_id`, `jwt`
+alanlarını alır ve tüm aşamaların sonucunu tek seferde döner.
+
+---
+
+## 7. Doğrulama Hattı (Pipeline) Mantığı
+
+Her fotoğraf sırasıyla şu üç aşamadan geçer; ilk başarısız aşamada işlem durur:
+
+1. **İç / Dış Mekân** (`inside_outside`) — Dış cephe, bahçe gibi görseller "outside"
+   olarak işaretlenip reddedilir.
+2. **Oda Kategorisi** (`oda_kategorileri`) — Görsel "oda değil" (`Not_Room_Other`)
+   ise veya beklenen oda tipiyle eşleşmiyorsa (ör. salon beklenirken mutfak gelmesi)
+   reddedilir.
+3. **Oda Kalitesi** (`kalite_salon` / `kalite_mutfak` / `kalite_banyo`) — Geçerli
+   görsel, oda tipine uygun kalite modeliyle **İyi / Normal / Kötü** olarak puanlanır.
+
+> **Etiket tutarlılığı:** `models.py` içindeki her modelin `classes` listesi,
+> eğitimde kullanılan klasör adlarıyla (ImageFolder'ın alfabetik sıralaması) birebir
+> aynı sırada olmalıdır. Aynı şekilde `pipeline.py` içindeki `BELIRSIZ_ETIKET` ve
+> `ODA_ESLESME` değerleri de eğitimdeki etiketlerle uyumlu olmalıdır. Bu eşleşmeler
+> bozulursa modeller yüklenir ama tahminler yanlış yorumlanır.
+
+---
+
+## 8. Docker ile Çalıştırma (opsiyonel)
+
+Proje, üretimle birebir aynı ortamı sağlayan bir `Dockerfile` içerir.
+
+**İmajı oluştur:**
+
+```bash
+docker build -t kacagider-ml .
+```
+
+**Çalıştır:**
+
+```bash
+docker run -p 8000:8000 -e JAVA_BASE_URL="http://host.docker.internal:8080" kacagider-ml
+```
+
+> Docker derlemesi, NumPy sürümünü build sırasında doğrular; `numpy 2.x` yüklenmişse
+> derleme bilerek başarısız olur (regresyonu erken yakalamak için).
+
+---
+
+## 9. Üretime Alma (Railway)
+
+Üretim ortamı **Railway** üzerinde, depodaki `Dockerfile` kullanılarak derlenir
+(`railway.json` içinde `builder: DOCKERFILE` olarak tanımlıdır). Yerel makineden
+dağıtım yapılmaz; Railway depoyu kendisi çeker.
+
+Railway'de dikkat edilecekler:
+
+1. **Builder:** `railway.json` zaten Dockerfile derlemesini ve hata durumunda en
+   fazla 3 kez yeniden başlatmayı tanımlar; ek ayar gerekmez.
+2. **PORT:** Railway portu otomatik atar; Dockerfile `${PORT:-8000}` değişkenini
+   okuduğu için ek yapılandırma gerekmez.
+3. **JAVA_BASE_URL:** Railway "Variables" sekmesine, backend servisinin genel ya da
+   iç adresi girilmelidir. Bu değişken ayarlanmazsa servis fotoğrafı yerel `8080`
+   adresine göndermeye çalışır ve üretimde başarısız olur.
+4. **Model dosyaları:** `model_dosyalari/` klasöründeki beş `.pth` dosyası depoda
+   bulunmalıdır (Dockerfile bunları imaja kopyalar). Büyük dosyalar olduğundan
+   depoya eklenmiş olduklarından emin olun.
+
+---
+
+## 10. Sık Karşılaşılan Sorunlar
+
+| Belirti | Olası neden / çözüm |
+|---------|---------------------|
+| Açılışta `NUMPY 2.x HALA YUKLU` hatası | Kurulum sırası bozulmuş. Önce `pip install "numpy<2"`, sonra torch, sonra requirements kurun. |
+| `/health` çıktısında model sayısı 5'ten az | `model_dosyalari/` içinde eksik `.pth` var. Beş model dosyasının da mevcut olduğunu doğrulayın. |
+| Fotoğraf geçerli ama backend'e iletilemiyor | `JAVA_BASE_URL` yanlış ya da backend çalışmıyor. Adresi ve backend'in ayakta olduğunu kontrol edin. |
+| Backend isteğinde zaman aşımı | `JAVA_TIMEOUT` değerini artırın ya da backend yanıt süresini kontrol edin. |
+| Modeller yükleniyor ama tahminler tutarsız | `models.py`'deki `classes` sırası veya `pipeline.py` etiketleri eğitimle uyuşmuyor olabilir. Etiket tutarlılığını gözden geçirin. |
+| `torch` kurulumu çok büyük/yavaş | CPU sürümünü kurduğunuzdan emin olun (`--index-url https://download.pytorch.org/whl/cpu`). |
+
+---
+
+## 11. Özet — Hızlı Başlangıç
+
+```bash
+# 1. Klasöre gir ve sanal ortam oluştur
+cd ml_servisi
+python -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\Activate.ps1
+
+# 2. Bağımlılıkları doğru sırayla kur
+pip install "numpy<2"
+pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+
+# 3. (Gerekiyorsa) backend adresini ayarla
+export JAVA_BASE_URL="http://localhost:8080"
+
+# 4. Çalıştır
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# 5. Kontrol et
+curl http://localhost:8000/health
+```
+
+Servis bu adımların ardından çalışır durumda olur. Doğrulanmış fotoğrafların
+kaydedilebilmesi için **Java backend'in** de çalışıyor ve `JAVA_BASE_URL` ile
+erişilebilir olması gerekir; backend kurulumu kendi kılavuzunda anlatılmaktadır.
+
